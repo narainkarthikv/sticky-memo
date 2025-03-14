@@ -2,7 +2,21 @@
 
 Sticky-Memo is a sticky notes application built using React.js + Vite along with MUI. This documentation will guide you through the process of contributing to this project.
 
+## Tech Stack
+
+<table>
+    <tr>
+     <td>Frontend</td>
+     <td><img src="https://skillicons.dev/icons?i=react,mui,vite" /></td>
+    </tr>
+    <tr>
+     <td>CI/CD</td>
+     <td><img src="https://skillicons.dev/icons?i=netlify,githubactions" /></td>
+    </tr>
+</table>
+
 ## Table of Contents
+
 - [Installation](#installation)
   - [Clone the Repository](#clone-the-repository)
   - [Frontend Installation](#frontend-installation)

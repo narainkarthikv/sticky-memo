@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useRecoilState } from "recoil";
-import { snackbarState } from "../utils/state";
+import { snackbarState } from "../../utils/state";
 
 function CommonAdd({ onAdd, itemType, boxStyles, textFieldStyles, iconButtonStyles }) {
   const [item, setItem] = useState({

@@ -9,7 +9,6 @@ import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/mate
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { tableListStyles, tableStyles, tableHeadStyles, tableCellStyles, boxStyles, scrollBoxStyles } from '../styles/tableListStyles';
-import CommonSort from '../components/common/CommonSort';
 
 const TableList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -19,7 +18,6 @@ const TableList = (props) => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
-  const [sortOrder, setSortOrder] = useState('asc');
 
   const {
     isEditing,
@@ -53,13 +51,6 @@ const TableList = (props) => {
   };
 
   const filteredItems = filterItems(items, filter);
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    if (sortOrder === 'asc') {
-      return a.title.localeCompare(b.title);
-    } else {
-      return b.title.localeCompare(a.title);
-    }
-  });
 
   const handleClickPopover = (event, index) => {
     setEditingIndex(index);
@@ -72,7 +63,6 @@ const TableList = (props) => {
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box sx={tableListStyles}>
         <CreateRow onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Row")} />
-        <CommonSort sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
       <Box sx={scrollBoxStyles}>
@@ -84,7 +74,7 @@ const TableList = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedItems.map((item, index) => (
+            {filteredItems.map((item, index) => (
               <TableCard
                 key={index}
                 item={item}

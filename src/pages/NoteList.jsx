@@ -5,7 +5,6 @@ import CreateNote from '../components/Note/CreateNote';
 import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
-import CommonSort from '../components/common/CommonSort';
 import { Box } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
@@ -19,7 +18,6 @@ const NoteList = (props) => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
-  const [sortOrder, setSortOrder] = useState('asc');
 
   const {
     isEditing,
@@ -53,13 +51,6 @@ const NoteList = (props) => {
   };
 
   const filteredItems = filterItems(items, filter);
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    if (sortOrder === 'asc') {
-      return a.title.localeCompare(b.title);
-    } else {
-      return b.title.localeCompare(a.title);
-    }
-  });
 
   const handleClickPopover = (event, index) => {
     setEditingIndex(index);
@@ -73,10 +64,9 @@ const NoteList = (props) => {
       <Box>
         <CreateNote onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Note")} />
         <CommonFilter filter={filter} setFilter={setFilter} />
-        <CommonSort sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </Box>
       <Box sx={scrollBoxStyles}>
-        {sortedItems.map((item, index) => (
+        {filteredItems.map((item, index) => (
           <NoteCard
             key={index}
             item={item}
