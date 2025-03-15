@@ -21,3 +21,4 @@ export const scrollBoxStyles = {
   '&::-webkit-scrollbar-thumb:hover': { backgroundColor: theme.palette.accent.main },
   '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1', borderRadius: '8px' },
 };
+

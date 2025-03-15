@@ -10,6 +10,7 @@ import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { boardListStyles, scrollBoxStyles } from '../styles/boardListStyles';
 import CommonSort from '../components/common/CommonSort';
+import AddButton from '../components/common/AddButton';
 
 const BoardList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -67,6 +68,11 @@ const BoardList = (props) => {
   };
   const handleClosePopover = () => setAnchorEl(null);
 
+  const addBoard = () => {
+    const newBoard = { title: '', content: '' };
+    setItems([...items, newBoard]);
+  };
+
   return (
     <Box sx={boardListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
@@ -75,7 +81,7 @@ const BoardList = (props) => {
         <CommonSort sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
-      <Box sx={scrollBoxStyles}>
+      <Box sx={{ ...scrollBoxStyles, flex: 1, overflowY: 'auto' }}>
         {sortedItems.map((item, index) => (
           <BoardCard
             key={index}
@@ -100,6 +106,9 @@ const BoardList = (props) => {
             setSnackbar={setSnackbar}
           />
         ))}
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+          <AddButton onClick={addBoard} />
+        </Box>
       </Box>
     </Box>
   );
