@@ -9,6 +9,8 @@ import { Box } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { boardListStyles, scrollBoxStyles } from '../styles/boardListStyles';
+import AddButton from '../components/common/AddButton';
+
 
 const BoardList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -58,6 +60,11 @@ const BoardList = (props) => {
   };
   const handleClosePopover = () => setAnchorEl(null);
 
+  const addBoard = () => {
+    const newBoard = { title: '', content: '' };
+    setItems([...items, newBoard]);
+  };
+
   return (
     <Box sx={boardListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
@@ -90,6 +97,9 @@ const BoardList = (props) => {
             setSnackbar={setSnackbar}
           />
         ))}
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+          <AddButton onClick={addBoard} />
+        </Box>
       </Box>
     </Box>
   );

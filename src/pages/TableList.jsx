@@ -9,6 +9,8 @@ import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/mate
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { tableListStyles, tableStyles, tableHeadStyles, tableCellStyles, boxStyles, scrollBoxStyles } from '../styles/tableListStyles';
+import AddButton from '../components/common/AddButton';
+
 
 const TableList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -58,6 +60,11 @@ const TableList = (props) => {
   };
   const handleClosePopover = () => setAnchorEl(null);
 
+  const addRow = () => {
+    const newRow = { title: '', content: '' };
+    setItems([...items, newRow]);
+  };
+
   return (
     <Box sx={boxStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
@@ -98,6 +105,11 @@ const TableList = (props) => {
                 setSnackbar={setSnackbar}
               />
             ))}
+            <TableRow>
+              <TableCell colSpan={2} align="center">
+                <AddButton onClick={addRow} />
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </Box>

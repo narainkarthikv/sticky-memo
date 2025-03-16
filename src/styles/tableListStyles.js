@@ -42,3 +42,18 @@ export const scrollBoxStyles = {
   '&::-webkit-scrollbar-thumb:hover': { backgroundColor: theme.palette.accent.main },
   '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1', borderRadius: '8px' },
 };
+
+export const noteListContainer = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '16px',
+  padding: '16px',
+};
+
+export const addButtonContainer = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%',
+  minHeight: '100px', // Ajusta según sea necesario
+};

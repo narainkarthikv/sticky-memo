@@ -9,6 +9,7 @@ import { Box } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
+import AddButton from '../components/common/AddButton';
 
 const NoteList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -58,13 +59,19 @@ const NoteList = (props) => {
   };
   const handleClosePopover = () => setAnchorEl(null);
 
+  const addNote = () => {
+    const newNote = { title: '', content: '' };
+    setItems([...items, newNote]);
+  };
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '120vh', margin: '16px' }}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box>
         <CreateNote onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Note")} />
         <CommonFilter filter={filter} setFilter={setFilter} />
       </Box>
+
       <Box sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (
           <NoteCard
@@ -90,6 +97,9 @@ const NoteList = (props) => {
             setSnackbar={setSnackbar}
           />
         ))}
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+          <AddButton onClick={addNote} />
+        </Box>
       </Box>
     </Box>
   );
