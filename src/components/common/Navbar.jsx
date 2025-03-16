@@ -1,48 +1,80 @@
 import React, { useState } from "react";
-import { AppBar, Box, Container, IconButton, Typography } from "@mui/material";
+import { AppBar as MuiAppBar, Box, IconButton, Typography, Drawer as MuiDrawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Tooltip, styled, useTheme } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
-import { navbarStyles } from './styles';
+import NoteIcon from "@mui/icons-material/Note";
+import { drawerStyles, drawerHeaderStyles, appBarStyles, mainContentStyles } from './styles';
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
-// NavItem component
-const NavItem = ({ to, icon, label }) => {
-  const [hovered, setHovered] = useState(false);
+const Navbar = () => {
+  const theme = useTheme();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
+  const drawerItems = (
+    <List>
+      <Tooltip title="Boards" placement="right" arrow>
+        <ListItem button component={RouterLink} to="/boards">
+          <ListItemIcon><DashboardOutlinedIcon /></ListItemIcon>
+          <ListItemText primary="Boards" sx={{ opacity: drawerOpen ? 1 : 0 }} />
+        </ListItem>
+      </Tooltip>
+      <Tooltip title="Tables" placement="right" arrow>
+        <ListItem button component={RouterLink} to="/tables">
+          <ListItemIcon><TableChartOutlinedIcon /></ListItemIcon>
+          <ListItemText primary="Tables" sx={{ opacity: drawerOpen ? 1 : 0 }} />
+        </ListItem>
+      </Tooltip>
+      <Tooltip title="Notes" placement="right" arrow>
+        <ListItem button component={RouterLink} to="/">
+          <ListItemIcon><NoteIcon /></ListItemIcon>
+          <ListItemText primary="Notes" sx={{ opacity: drawerOpen ? 1 : 0 }} />
+        </ListItem>
+      </Tooltip>
+    </List>
+  );
 
   return (
-    <IconButton
-      sx={navbarStyles.iconButton}
-      component={RouterLink}
-      to={to}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <Box sx={navbarStyles.link}>
-        {icon}
-        <Typography variant="body2" sx={{ ...navbarStyles.label, display: hovered ? 'inline' : 'none' }}>
-          {label}
-        </Typography>
+    <Box sx={{ display: 'flex' }}>
+      <MuiAppBar position="fixed" open={drawerOpen} sx={appBarStyles(theme, drawerOpen)}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ marginRight: 5, ...(drawerOpen && { display: 'none' }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            Sticky Memo
+          </Typography>
+        </Toolbar>
+      </MuiAppBar>
+      <MuiDrawer variant="permanent" open={drawerOpen} sx={drawerStyles(theme, drawerOpen)}>
+        <Box sx={drawerHeaderStyles(theme)}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
+          </IconButton>
+        </Box>
+        {drawerItems}
+      </MuiDrawer>
+      <Box component="main" sx={mainContentStyles(theme, drawerOpen)}>
+        <Box sx={drawerHeaderStyles(theme)} />
+        {/* Main content goes here */}
       </Box>
-    </IconButton>
+    </Box>
   );
 };
-
-// Navbar component
-const Navbar = () => (
-  <Box sx={{ flexGrow: 1 }}>
-    <AppBar position="static">
-      <Container maxWidth={false} sx={navbarStyles.container}>
-        <RouterLink to="/" style={{ textDecoration: "none", color: "black" }}>
-          <StickyNote2Icon style={{ fontSize: "1.5rem" }} />
-        </RouterLink>
-        <Box sx={navbarStyles.navItems}>
-          <NavItem to="/boards" icon={<DashboardOutlinedIcon />} label="Boards" />
-          <NavItem to="/tables" icon={<TableChartOutlinedIcon />} label="Tables" />
-        </Box>
-      </Container>
-    </AppBar>
-  </Box>
-);
 
 export default Navbar;

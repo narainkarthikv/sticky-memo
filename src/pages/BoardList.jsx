@@ -9,8 +9,8 @@ import { Box } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { boardListStyles, scrollBoxStyles } from '../styles/boardListStyles';
-import CommonSort from '../components/common/CommonSort';
 import AddButton from '../components/common/AddButton';
+
 
 const BoardList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -20,7 +20,6 @@ const BoardList = (props) => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
-  const [sortOrder, setSortOrder] = useState('asc');
 
   const {
     isEditing,
@@ -54,13 +53,6 @@ const BoardList = (props) => {
   };
 
   const filteredItems = filterItems(items, filter);
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    if (sortOrder === 'asc') {
-      return a.title.localeCompare(b.title);
-    } else {
-      return b.title.localeCompare(a.title);
-    }
-  });
 
   const handleClickPopover = (event, index) => {
     setEditingIndex(index);
@@ -78,11 +70,10 @@ const BoardList = (props) => {
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <CreateBoard onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Board")} />
-        <CommonSort sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
-      <Box sx={{ ...scrollBoxStyles, flex: 1, overflowY: 'auto' }}>
-        {sortedItems.map((item, index) => (
+      <Box sx={scrollBoxStyles}>
+        {filteredItems.map((item, index) => (
           <BoardCard
             key={index}
             item={item}
