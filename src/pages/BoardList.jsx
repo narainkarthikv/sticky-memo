@@ -1,7 +1,6 @@
 import React, { useState, useTransition } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
-import CreateBoard from '../components/Board/CreateBoard';
 import BoardCard from '../components/Board/BoardCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
@@ -68,9 +67,6 @@ const BoardList = (props) => {
   return (
     <Box sx={boardListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <CreateBoard onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Board")} />
-      </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
       <Box sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (

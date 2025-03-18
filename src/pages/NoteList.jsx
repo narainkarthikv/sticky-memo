@@ -1,7 +1,6 @@
 import React, { useState, useTransition } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
-import CreateNote from '../components/Note/CreateNote';
 import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
@@ -68,7 +67,6 @@ const NoteList = (props) => {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '120vh', margin: '16px' }}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box>
-        <CreateNote onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Note")} />
         <CommonFilter filter={filter} setFilter={setFilter} />
       </Box>
 

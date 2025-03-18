@@ -33,7 +33,6 @@ export const boxStyles = {
 };
 
 export const scrollBoxStyles = {
-  height: '250px',
   width: '90%',
   overflowY: 'auto',
   margin: '0 auto',
