@@ -30,11 +30,13 @@ export const boxStyles = {
   alignItems: 'center',
   backgroundColor: theme.palette.background.default,
   gap: '10px',
+  marginTop: 8,
+  width: '100%',
+  height:'100vh',
 };
 
 export const scrollBoxStyles = {
-  height: '250px',
-  width: '90%',
+  width: '100%',
   overflowY: 'auto',
   margin: '0 auto',
   '&::-webkit-scrollbar': { width: '8px', backgroundColor: '#f1f1f1', borderRadius: '8px' },

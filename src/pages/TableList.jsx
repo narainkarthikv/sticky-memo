@@ -1,7 +1,6 @@
 import React, { useState, useTransition } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
-import CreateRow from '../components/Table/CreateRow';
 import TableCard from '../components/Table/TableCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
@@ -68,9 +67,6 @@ const TableList = (props) => {
   return (
     <Box sx={boxStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
-      <Box sx={tableListStyles}>
-        <CreateRow onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Row")} />
-      </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
       <Box sx={scrollBoxStyles}>
         <Table sx={tableStyles}>
