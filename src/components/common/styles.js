@@ -2,10 +2,10 @@ import theme from '../../theme';
 
 export const footerStyles = {
   footer: {
-    width: '100%',
+    width: 'auto',
     textAlign: 'center',
     padding: theme.spacing(1),
-    position: 'fixed',
+    position: 'relative',
     bottom: 0,
     left: 0,
     fontSize: '0.9em',
@@ -14,6 +14,9 @@ export const footerStyles = {
   },
   inlineText: {
     display: 'inline',
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
+    },
   },
   link: {
     color: theme.palette.secondary.main,
@@ -141,7 +144,6 @@ export const drawerStyles = (theme, open) => ({
 
 export const mainContentStyles = (theme, open) => ({
   flexGrow: 1,
-  p: 3,
   width: open ? '90%' : '95%',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AppBar as MuiAppBar, Box, IconButton, Typography, Drawer as MuiDrawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Tooltip, styled, useTheme } from "@mui/material";
+import { AppBar as MuiAppBar, Box, IconButton, Typography, Drawer as MuiDrawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Tooltip, styled, useTheme, Slide } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -24,20 +24,41 @@ const Navbar = () => {
     <List>
       <Tooltip title="Boards" placement="right" arrow>
         <ListItem button component={RouterLink} to="/boards">
-          <ListItemIcon><DashboardOutlinedIcon /></ListItemIcon>
-          <ListItemText primary="Boards" sx={{ opacity: drawerOpen ? 1 : 0 }} />
+          <ListItemIcon>
+            <DashboardOutlinedIcon />
+          </ListItemIcon>
+          <Slide direction="right" in={drawerOpen} timeout={300}>
+            <ListItemText
+              primary="Boards"
+              sx={{ opacity: drawerOpen ? 1 : 0 }}
+            />
+          </Slide>
         </ListItem>
       </Tooltip>
       <Tooltip title="Tables" placement="right" arrow>
         <ListItem button component={RouterLink} to="/tables">
-          <ListItemIcon><TableChartOutlinedIcon /></ListItemIcon>
-          <ListItemText primary="Tables" sx={{ opacity: drawerOpen ? 1 : 0 }} />
+          <ListItemIcon>
+            <TableChartOutlinedIcon />
+          </ListItemIcon>
+          <Slide direction="right" in={drawerOpen} timeout={300}>
+            <ListItemText
+              primary="Tables"
+              sx={{ opacity: drawerOpen ? 1 : 0 }}
+            />
+          </Slide>
         </ListItem>
       </Tooltip>
       <Tooltip title="Notes" placement="right" arrow>
-        <ListItem button component={RouterLink} to="/">
-          <ListItemIcon><NoteIcon /></ListItemIcon>
-          <ListItemText primary="Notes" sx={{ opacity: drawerOpen ? 1 : 0 }} />
+        <ListItem button component={RouterLink} to='/'>
+          <ListItemIcon>
+            <NoteIcon />
+          </ListItemIcon>
+          <Slide direction="right" in={drawerOpen} timeout={300}>
+            <ListItemText
+              primary="Notes"
+              sx={{ opacity: drawerOpen ? 1 : 0 }}
+            />
+          </Slide>
         </ListItem>
       </Tooltip>
     </List>
@@ -70,7 +91,7 @@ const Navbar = () => {
         {drawerItems}
       </MuiDrawer>
       <Box component="main" sx={mainContentStyles(theme, drawerOpen)}>
-        <Box sx={drawerHeaderStyles(theme)} />
+        <Box />
         {/* Main content goes here */}
       </Box>
     </Box>

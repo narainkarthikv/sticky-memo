@@ -64,7 +64,7 @@ const NoteList = (props) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '120vh', margin: '16px' }}>
+    <Box sx={noteListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box>
         <CommonFilter filter={filter} setFilter={setFilter} />
