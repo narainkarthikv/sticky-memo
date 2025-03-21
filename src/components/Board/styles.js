@@ -3,7 +3,7 @@ import theme from '../../theme';
 export const cardStyles = (item) => ({
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: item.checked ? theme.palette.primary.main : item.held ? theme.palette.info.main : theme.palette.accent.main,
+  backgroundColor: item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main,
   borderRadius: '12px',
   width: '250px',
   height: '150px',
