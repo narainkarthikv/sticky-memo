@@ -46,7 +46,13 @@ const TableList = (props) => {
   const handleSave = (item, id, newTitle, newContent) => {
     setIsEditing(false);
     const updatedItems = items.map((item, index) =>
-      index === id ? { ...item, title: newTitle || item.title, content: newContent || item.content } : item
+      index === id ? { 
+        ...item, 
+        title: newTitle || item.title, 
+        content: newContent || item.content,
+        startDate: item.startDate,
+        dueDate: item.dueDate 
+      } : item
     );
     startTransition(() => setItems(updatedItems));
   };
@@ -60,7 +66,14 @@ const TableList = (props) => {
   const handleClosePopover = () => setAnchorEl(null);
 
   const addRow = () => {
-    const newRow = { title: '', content: '' };
+    const newRow = { 
+      title: 'New Row',
+      content: '',
+      startDate: null,
+      dueDate: null,
+      checked: false,
+      held: false
+    };
     setItems([...items, newRow]);
   };
 
@@ -74,6 +87,8 @@ const TableList = (props) => {
             <TableRow>
               <TableCell align='center' sx={tableCellStyles}>Title</TableCell>
               <TableCell align='center' sx={tableCellStyles}>Content</TableCell>
+              <TableCell align='center' sx={{...tableCellStyles, minWidth: '200px'}}>Start Date</TableCell>
+              <TableCell align='center' sx={{...tableCellStyles, minWidth: '250px'}}>Due Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,10 +114,11 @@ const TableList = (props) => {
                 handleDragOver={handleDragOver}
                 setItems={setItems}
                 setSnackbar={setSnackbar}
+                items={items}
               />
             ))}
             <TableRow>
-              <TableCell colSpan={2} align="center">
+              <TableCell colSpan={4} align="center">
                 <AddButton onClick={addRow} />
               </TableCell>
             </TableRow>

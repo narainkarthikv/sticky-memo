@@ -3,14 +3,27 @@ import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist();
 
-// State to manage items
+/**
+ * State to manage items
+ * Each item has the following structure:
+ * {
+ *   title: string,
+ *   content: string,
+ *   startDate: string | null,
+ *   dueDate: string | null,
+ *   checked: boolean,
+ *   held: boolean
+ * }
+ */
 export const itemsState = atom({
   key: 'itemsState',
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
 
-// State to manage snackbar notifications
+/**
+ * State to manage snackbar notifications
+ */
 export const snackbarState = atom({
   key: 'snackbarState',
   default: {
@@ -18,4 +31,5 @@ export const snackbarState = atom({
     message: '',
     severity: 'success', // Options: "success", "warning", "error", "info"
   },
+  effects_UNSTABLE: [persistAtom],
 });

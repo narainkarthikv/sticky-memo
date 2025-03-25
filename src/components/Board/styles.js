@@ -5,11 +5,12 @@ export const cardStyles = (item) => ({
   flexDirection: 'column',
   backgroundColor: item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main,
   borderRadius: '12px',
-  width: '250px',
-  height: '150px',
+  width: '300px',
+  height: 'auto',
+  minHeight: '250px',
   padding: '1em',
   transition: 'transform 0.3s ease-in, background-color 0.3s ease-in',
-  margin: '20px 15px 0px 0px',
+  margin: '20px 15px 20px 0px',
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   '&:hover': { transform: 'scale(1.02)', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)' },
 });
@@ -41,6 +42,20 @@ export const popoverStyles = {
 export const textFieldStyles = {
   padding: '1em',
   flexGrow: 1,
+  maxHeight: '150px',
+  overflowY: 'auto',
+  scrollbarWidth: 'thin',
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    borderRadius: '3px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: '3px',
+  },
 };
 
 export const boxStyles = {
@@ -72,4 +87,35 @@ export const iconButtonStyles = {
     backgroundColor: theme.palette.secondary.dark,
     transform: 'scale(1.1)',
   },
+};
+
+// New styles for date fields
+export const dateContainerStyles = {
+  display: 'flex', 
+  flexDirection: 'column',
+  gap: 2,
+  mt: 2,
+  px: 2,
+  pb: 2,
+  borderTop: `1px solid ${theme.palette.divider}`,
+  pt: 2,
+  backgroundColor: 'transparent',
+};
+
+export const dateFieldStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 1.5,
+  p: 1,
+  borderRadius: '8px',
+  '&:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+  },
+};
+
+export const dateValueStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  flex: 1,
 };
