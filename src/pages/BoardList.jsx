@@ -46,7 +46,13 @@ const BoardList = (props) => {
   const handleSave = (item, id, newTitle, newContent) => {
     setIsEditing(false);
     const updatedItems = items.map((item, index) =>
-      index === id ? { ...item, title: newTitle || item.title, content: newContent || item.content } : item
+      index === id ? { 
+        ...item, 
+        title: newTitle || item.title, 
+        content: newContent || item.content,
+        startDate: item.startDate,
+        dueDate: item.dueDate 
+      } : item
     );
     startTransition(() => setItems(updatedItems));
   };
@@ -60,7 +66,14 @@ const BoardList = (props) => {
   const handleClosePopover = () => setAnchorEl(null);
 
   const addBoard = () => {
-    const newBoard = { title: '', content: '' };
+    const newBoard = { 
+      title: 'New Board',
+      content: '',
+      startDate: null,
+      dueDate: null,
+      checked: false,
+      held: false
+    };
     setItems([...items, newBoard]);
   };
 
@@ -91,6 +104,7 @@ const BoardList = (props) => {
             handleDragOver={handleDragOver}
             setItems={setItems}
             setSnackbar={setSnackbar}
+            items={items}
           />
         ))}
         <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>

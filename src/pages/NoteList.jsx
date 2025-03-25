@@ -45,7 +45,13 @@ const NoteList = (props) => {
   const handleSave = (item, id, newTitle, newContent) => {
     setIsEditing(false);
     const updatedItems = items.map((item, index) =>
-      index === id ? { ...item, title: newTitle || item.title, content: newContent || item.content } : item
+      index === id ? { 
+        ...item, 
+        title: newTitle || item.title, 
+        content: newContent || item.content,
+        startDate: item.startDate,
+        dueDate: item.dueDate 
+      } : item
     );
     startTransition(() => setItems(updatedItems));
   };
@@ -59,7 +65,14 @@ const NoteList = (props) => {
   const handleClosePopover = () => setAnchorEl(null);
 
   const addNote = () => {
-    const newNote = { title: '', content: '' };
+    const newNote = { 
+      title: 'New Note',
+      content: '',
+      startDate: null,
+      dueDate: null,
+      checked: false,
+      held: false
+    };
     setItems([...items, newNote]);
   };
 
@@ -93,6 +106,7 @@ const NoteList = (props) => {
             handleDragOver={handleDragOver}
             setItems={setItems}
             setSnackbar={setSnackbar}
+            items={items}
           />
         ))}
         <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
