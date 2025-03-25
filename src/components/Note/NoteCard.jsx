@@ -130,7 +130,7 @@ const NoteCard = ({
                     handleClosePopover();
                   }}
                 >
-                  <EditIcon fontSize="small" />
+                  <EditIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <IconButton
                   sx={buttonStyle}
@@ -139,7 +139,7 @@ const NoteCard = ({
                     handleClosePopover();
                   }}
                 >
-                  <CheckCircleIcon fontSize="small" />
+                  <CheckCircleIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <IconButton
                   sx={buttonStyle}
@@ -148,7 +148,7 @@ const NoteCard = ({
                     handleClosePopover();
                   }}
                 >
-                  <BackHandIcon fontSize="small" />
+                  <BackHandIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <IconButton
                   sx={buttonStyle}
@@ -157,7 +157,7 @@ const NoteCard = ({
                     handleClosePopover();
                   }}
                 >
-                  <DeleteIcon fontSize="small" />
+                  <DeleteIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
               </Typography>
             </Popover>

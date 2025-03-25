@@ -19,9 +19,12 @@ export const cardStyles = (item) => ({
 });
 
 export const buttonStyle = {
-  color: 'white',
+  color: theme.palette.primary.contrastText,
+  borderRadius: '100%',
+  backgroundColor: theme.palette.secondary.main,
+  padding: '3px',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: theme.palette.secondary.dark,
   },
 };
 
@@ -30,16 +33,17 @@ export const typographyStyles = {
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '10px',
-  backgroundColor: 'rgba(0, 0, 0, 0.1)',
-  color: 'white',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
 };
 
 export const popoverStyles = {
   display: 'flex',
   flexDirection: 'column',
   padding: '5px',
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.primary.main,
   borderRadius: '4px',
+  gap: '4px',
 };
 
 export const textFieldStyles = {
