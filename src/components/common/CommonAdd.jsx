@@ -3,6 +3,9 @@ import { Box, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useRecoilState } from "recoil";
 import { snackbarState } from "../../utils/state";
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import EventIcon from '@mui/icons-material/Event';
+import { useTheme } from '@mui/material/styles';
 
 function CommonAdd({ onAdd, itemType, boxStyles, textFieldStyles, iconButtonStyles }) {
   const [item, setItem] = useState({
@@ -13,6 +16,7 @@ function CommonAdd({ onAdd, itemType, boxStyles, textFieldStyles, iconButtonStyl
   });
 
   const [snackbar, setSnackbar] = useRecoilState(snackbarState);
+  const theme = useTheme();
 
   function submitItem(event) {
     event.preventDefault();
@@ -73,7 +77,28 @@ function CommonAdd({ onAdd, itemType, boxStyles, textFieldStyles, iconButtonStyl
           value={item.startDate}
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
-          sx={{ flex: 1 }}
+          InputProps={{
+            startAdornment: (
+              <CalendarTodayIcon 
+                fontSize="small" 
+                sx={{ mr: 1, color: theme.palette.primary.main }} 
+              />
+            ),
+          }}
+          sx={{ 
+            flex: 1,
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: theme.palette.primary.light,
+              },
+              '&:hover fieldset': {
+                borderColor: theme.palette.primary.main,
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: theme.palette.primary.main,
+              },
+            },
+          }}
         />
         <TextField
           size="small"
@@ -84,7 +109,28 @@ function CommonAdd({ onAdd, itemType, boxStyles, textFieldStyles, iconButtonStyl
           value={item.dueDate}
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
-          sx={{ flex: 1 }}
+          InputProps={{
+            startAdornment: (
+              <EventIcon 
+                fontSize="small" 
+                sx={{ mr: 1, color: theme.palette.secondary.main }} 
+              />
+            ),
+          }}
+          sx={{ 
+            flex: 1,
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: theme.palette.secondary.light,
+              },
+              '&:hover fieldset': {
+                borderColor: theme.palette.secondary.main,
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: theme.palette.secondary.main,
+              },
+            },
+          }}
         />
       </Box>
       <IconButton

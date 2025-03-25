@@ -68,19 +68,24 @@ export const dateContainerStyles = {
   alignItems: 'center',
   gap: 1,
   flexWrap: 'wrap',
-  mt: 1,
+  mt: 2,
 };
 
 export const dateFieldStyles = {
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  padding: '4px 8px',
+  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+  padding: '6px 10px',
   borderRadius: '4px',
-  color: 'white',
+  border: '1px solid rgba(255, 255, 255, 0.2)',
+  color: theme.palette.accent.contrastText,
+  '&:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+  },
 };
 
 export const dateValueStyles = {
   fontSize: '0.875rem',
-  color: 'white',
+  color: theme.palette.accent.contrastText,
+  fontWeight: 500,
 };

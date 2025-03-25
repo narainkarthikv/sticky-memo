@@ -11,6 +11,7 @@ import EventIcon from '@mui/icons-material/Event';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { holdItem, checkItem, deleteItem } from '../../utils/helper';
 import { cardStyles, buttonStyle, typographyStyles, popoverStyles, textFieldStyles, dateContainerStyles, dateFieldStyles, dateValueStyles } from './styles';
+import { useTheme } from '@mui/material/styles';
 
 const NoteCard = ({
   item,
@@ -37,6 +38,7 @@ const NoteCard = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const [dateHover, setDateHover] = useState(null);
+  const theme = useTheme();
 
   // Calculate days remaining if due date exists
   const calculateDaysRemaining = () => {
@@ -183,7 +185,28 @@ const NoteCard = ({
                   value={item.startDate || ''}
                   onChange={handleStartDateChange}
                   InputLabelProps={{ shrink: true }}
-                  sx={{ flex: 1 }}
+                  InputProps={{
+                    startAdornment: (
+                      <CalendarTodayIcon 
+                        fontSize="small" 
+                        sx={{ mr: 1, color: theme.palette.primary.main }} 
+                      />
+                    ),
+                  }}
+                  sx={{ 
+                    flex: 1,
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: theme.palette.primary.main,
+                      },
+                    },
+                  }}
                 />
                 <TextField
                   size="small"
@@ -193,7 +216,28 @@ const NoteCard = ({
                   value={item.dueDate || ''}
                   onChange={handleDueDateChange}
                   InputLabelProps={{ shrink: true }}
-                  sx={{ flex: 1 }}
+                  InputProps={{
+                    startAdornment: (
+                      <EventIcon 
+                        fontSize="small" 
+                        sx={{ mr: 1, color: theme.palette.secondary.main }} 
+                      />
+                    ),
+                  }}
+                  sx={{ 
+                    flex: 1,
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: theme.palette.secondary.main,
+                      },
+                    },
+                  }}
                 />
               </Box>
               <IconButton
@@ -210,7 +254,13 @@ const NoteCard = ({
                 {item.startDate && (
                   <Tooltip title="Start Date" TransitionComponent={Fade}>
                     <Box sx={dateFieldStyles}>
-                      <CalendarTodayIcon fontSize="small" sx={{ mr: 0.5 }} />
+                      <CalendarTodayIcon 
+                        fontSize="small" 
+                        sx={{ 
+                          mr: 0.5,
+                          color: theme.palette.primary.main
+                        }} 
+                      />
                       <Typography sx={dateValueStyles}>
                         {new Date(item.startDate).toLocaleDateString()}
                       </Typography>
@@ -220,7 +270,13 @@ const NoteCard = ({
                 {item.dueDate && (
                   <Tooltip title="Due Date" TransitionComponent={Fade}>
                     <Box sx={dateFieldStyles}>
-                      <EventIcon fontSize="small" sx={{ mr: 0.5 }} />
+                      <EventIcon 
+                        fontSize="small" 
+                        sx={{ 
+                          mr: 0.5,
+                          color: theme.palette.secondary.main
+                        }} 
+                      />
                       <Typography sx={dateValueStyles}>
                         {new Date(item.dueDate).toLocaleDateString()}
                       </Typography>
@@ -230,10 +286,29 @@ const NoteCard = ({
                 {daysRemaining !== null && (
                   <Chip
                     size="small"
-                    icon={<AccessTimeIcon />}
+                    icon={
+                      <AccessTimeIcon 
+                        sx={{ 
+                          color: daysRemaining < 0 ? 
+                            theme.palette.error.main : 
+                            daysRemaining <= 2 ? 
+                              theme.palette.warning.main : 
+                              theme.palette.success.main 
+                        }} 
+                      />
+                    }
                     label={`${daysRemaining} days ${daysRemaining < 0 ? 'overdue' : 'remaining'}`}
                     color={getDueDateChipColor()}
-                    sx={{ ml: 1 }}
+                    sx={{ 
+                      ml: 1,
+                      fontWeight: 500,
+                      border: '1px solid',
+                      borderColor: daysRemaining < 0 ? 
+                        theme.palette.error.main : 
+                        daysRemaining <= 2 ? 
+                          theme.palette.warning.main : 
+                          theme.palette.success.main
+                    }}
                   />
                 )}
               </Box>
