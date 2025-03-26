@@ -49,7 +49,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: "'Outfit', sans-serif", // Ensure Outfit is set here
     h1: {
       fontSize: '2.5rem',
       fontWeight: 500,

@@ -5,11 +5,10 @@ on:
     branches:
       - develop
   pull_request_target:
-    types: [closed]
+    types: [opened, synchronize]
 
 jobs:
   greeting:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
