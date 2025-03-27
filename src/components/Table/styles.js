@@ -2,7 +2,7 @@ import theme from '../../theme';
 
 export const tableRowStyles = (item) => ({
   color: theme.palette.text.primary,
-  backgroundColor: item.checked ? theme.palette.primary.main : item.held ? theme.palette.info.main : theme.palette.accent.main,
+  backgroundColor: item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main,
   width: '100%',
   height: 'auto',
   position: 'relative',

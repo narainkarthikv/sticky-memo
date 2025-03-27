@@ -3,12 +3,14 @@ import { Box, Link, Typography, IconButton } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 import { footerStyles } from './styles';
+import { useTheme } from '@mui/material/styles';
 
-// Footer component
 const Footer = () => {
+  const theme = useTheme();
+
   return (
-    <Box component="footer" sx={footerStyles.footer}>
-      <Typography variant="body2" sx={footerStyles.inlineText}>
+    <Box component="footer" sx={{ ...footerStyles.footer, backgroundColor: theme.palette.primary.main }}>
+      <Typography variant="body2" sx={{ ...footerStyles.inlineText, color: theme.palette.primary.contrastText }}>
         &#169; 2024 Open-Source Project -
       </Typography>
       <IconButton
@@ -19,7 +21,7 @@ const Footer = () => {
       >
         <GitHubIcon />
       </IconButton>
-      <Typography variant="body2" sx={{ ...footerStyles.inlineText, ml: 0.5 }}>
+      <Typography variant="body2" sx={{ ...footerStyles.inlineText, ml: 0.5, color: theme.palette.primary.contrastText }}>
         Developed By
       </Typography>
       <IconButton
@@ -34,7 +36,7 @@ const Footer = () => {
         href="https://www.github.com/narainkarthikv"
         target="_blank"
         rel="noopener noreferrer"
-        sx={footerStyles.link}
+        sx={{ ...footerStyles.link, color: theme.palette.secondary.main }}
       />
     </Box>
   );

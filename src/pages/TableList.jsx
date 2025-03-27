@@ -1,7 +1,6 @@
 import React, { useState, useTransition } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
-import CreateRow from '../components/Table/CreateRow';
 import TableCard from '../components/Table/TableCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
@@ -9,6 +8,8 @@ import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/mate
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { tableListStyles, tableStyles, tableHeadStyles, tableCellStyles, boxStyles, scrollBoxStyles } from '../styles/tableListStyles';
+import AddButton from '../components/common/AddButton';
+
 
 const TableList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -45,7 +46,13 @@ const TableList = (props) => {
   const handleSave = (item, id, newTitle, newContent) => {
     setIsEditing(false);
     const updatedItems = items.map((item, index) =>
-      index === id ? { ...item, title: newTitle || item.title, content: newContent || item.content } : item
+      index === id ? { 
+        ...item, 
+        title: newTitle || item.title, 
+        content: newContent || item.content,
+        startDate: item.startDate,
+        dueDate: item.dueDate 
+      } : item
     );
     startTransition(() => setItems(updatedItems));
   };
@@ -58,12 +65,21 @@ const TableList = (props) => {
   };
   const handleClosePopover = () => setAnchorEl(null);
 
+  const addRow = () => {
+    const newRow = { 
+      title: 'New Row',
+      content: '',
+      startDate: null,
+      dueDate: null,
+      checked: false,
+      held: false
+    };
+    setItems([...items, newRow]);
+  };
+
   return (
     <Box sx={boxStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
-      <Box sx={tableListStyles}>
-        <CreateRow onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Row")} />
-      </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
       <Box sx={scrollBoxStyles}>
         <Table sx={tableStyles}>
@@ -71,6 +87,8 @@ const TableList = (props) => {
             <TableRow>
               <TableCell align='center' sx={tableCellStyles}>Title</TableCell>
               <TableCell align='center' sx={tableCellStyles}>Content</TableCell>
+              <TableCell align='center' sx={{...tableCellStyles, minWidth: '200px'}}>Start Date</TableCell>
+              <TableCell align='center' sx={{...tableCellStyles, minWidth: '250px'}}>Due Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -96,8 +114,14 @@ const TableList = (props) => {
                 handleDragOver={handleDragOver}
                 setItems={setItems}
                 setSnackbar={setSnackbar}
+                items={items}
               />
             ))}
+            <TableRow>
+              <TableCell colSpan={4} align="center">
+                <AddButton onClick={addRow} />
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </Box>

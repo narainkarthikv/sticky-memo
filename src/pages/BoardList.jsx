@@ -1,7 +1,6 @@
 import React, { useState, useTransition } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
-import CreateBoard from '../components/Board/CreateBoard';
 import BoardCard from '../components/Board/BoardCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
@@ -9,6 +8,8 @@ import { Box } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { boardListStyles, scrollBoxStyles } from '../styles/boardListStyles';
+import AddButton from '../components/common/AddButton';
+
 
 const BoardList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -45,7 +46,13 @@ const BoardList = (props) => {
   const handleSave = (item, id, newTitle, newContent) => {
     setIsEditing(false);
     const updatedItems = items.map((item, index) =>
-      index === id ? { ...item, title: newTitle || item.title, content: newContent || item.content } : item
+      index === id ? { 
+        ...item, 
+        title: newTitle || item.title, 
+        content: newContent || item.content,
+        startDate: item.startDate,
+        dueDate: item.dueDate 
+      } : item
     );
     startTransition(() => setItems(updatedItems));
   };
@@ -58,12 +65,21 @@ const BoardList = (props) => {
   };
   const handleClosePopover = () => setAnchorEl(null);
 
+  const addBoard = () => {
+    const newBoard = { 
+      title: 'New Board',
+      content: '',
+      startDate: null,
+      dueDate: null,
+      checked: false,
+      held: false
+    };
+    setItems([...items, newBoard]);
+  };
+
   return (
     <Box sx={boardListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <CreateBoard onAdd={(newItem) => addItem(setItems, newItem, setSnackbar, "Board")} />
-      </Box>
       <CommonFilter filter={filter} setFilter={setFilter} />
       <Box sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (
@@ -88,8 +104,12 @@ const BoardList = (props) => {
             handleDragOver={handleDragOver}
             setItems={setItems}
             setSnackbar={setSnackbar}
+            items={items}
           />
         ))}
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+          <AddButton onClick={addBoard} />
+        </Box>
       </Box>
     </Box>
   );
