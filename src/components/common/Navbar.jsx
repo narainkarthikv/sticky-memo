@@ -5,6 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import NoteIcon from "@mui/icons-material/Note";
+import TimelineIcon from "@mui/icons-material/Timeline"; // Import icon for roadmap
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 const drawerWidth = 240;
@@ -124,6 +125,14 @@ const Navbar = () => {
             <NoteIcon />
           </ListItemIcon>
           {drawerOpen && <ListItemText primary="Notes" />}
+        </DrawerItemButton>
+      </Tooltip>
+      <Tooltip title="Roadmap" placement="right" arrow>
+        <DrawerItemButton component={RouterLink} to="/roadmap" open={drawerOpen}>
+          <ListItemIcon>
+            <TimelineIcon />
+          </ListItemIcon>
+          {drawerOpen && <ListItemText primary="Roadmap" />}
         </DrawerItemButton>
       </Tooltip>
     </List>
