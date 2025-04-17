@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Paper, IconButton } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { itemsState } from "../utils/state";
 import { format, eachDayOfInterval, startOfMonth, endOfMonth } from "date-fns";
@@ -25,20 +25,21 @@ const RoadmapView = () => {
   }, {});
 
   return (
-    <Box sx={{ padding: 3, backgroundColor: "#fff", color: "#000", height: "100vh" }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ padding: 3, backgroundColor: "#f9f9f9", color: "#000", height: "100vh" }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", color: "#333" }}>
         Roadmap
       </Typography>
-      <Box sx={{ overflowX: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+      <Paper elevation={3} sx={{ overflowX: "auto", padding: 2, borderRadius: 2 }}>
         {/* Timeline Header */}
         <Box
           sx={{
             display: "flex",
             position: "sticky",
             top: 0,
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "#fff",
             zIndex: 1,
-            borderBottom: "2px solid #ccc",
+            borderBottom: "2px solid #e0e0e0",
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
           <Box sx={{ width: 200, flexShrink: 0 }} />
@@ -49,10 +50,10 @@ const RoadmapView = () => {
                 width: 150,
                 textAlign: "center",
                 padding: 1,
-                borderRight: "1px solid #ccc",
+                borderRight: "1px solid #e0e0e0",
               }}
             >
-              <Typography variant="body2" fontWeight="bold">
+              <Typography variant="body2" fontWeight="bold" color="text.secondary">
                 {format(day, "MMM dd")}
               </Typography>
             </Box>
@@ -66,8 +67,11 @@ const RoadmapView = () => {
             sx={{
               display: "flex",
               alignItems: "center",
-              borderBottom: "1px solid #ccc",
-              minHeight: 50,
+              borderBottom: "1px solid #e0e0e0",
+              minHeight: 60,
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+              },
             }}
           >
             {/* Item Title */}
@@ -81,7 +85,7 @@ const RoadmapView = () => {
                 gap: 1,
               }}
             >
-              <Typography variant="body2" fontWeight="bold">
+              <Typography variant="body2" fontWeight="bold" color="text.primary">
                 {item.title}
               </Typography>
             </Box>
@@ -98,16 +102,17 @@ const RoadmapView = () => {
                   sx={{
                     width: 150,
                     textAlign: "center",
-                    borderRight: "1px solid #ccc",
-                    backgroundColor: isItemOnDay ? "#d4edda" : "transparent",
+                    borderRight: "1px solid #e0e0e0",
+                    backgroundColor: isItemOnDay ? "#e8f5e9" : "transparent",
                     transition: "background-color 0.2s",
                     "&:hover": {
-                      backgroundColor: isItemOnDay ? "#c3e6cb" : "#f5f5f5",
+                      backgroundColor: isItemOnDay ? "#c8e6c9" : "#f9f9f9",
                     },
+                    borderRadius: isItemOnDay ? 1 : 0,
                   }}
                 >
                   {isItemOnDay && (
-                    <Typography variant="body2" fontWeight="bold" color="#000">
+                    <Typography variant="body2" fontWeight="bold" color="text.primary">
                       {item.title}
                     </Typography>
                   )}
@@ -116,7 +121,7 @@ const RoadmapView = () => {
             })}
           </Box>
         ))}
-      </Box>
+      </Paper>
     </Box>
   );
 };
