@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import { AppBar, Box, IconButton, Typography, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Tooltip, styled, useTheme } from "@mui/material";
+import { AppBar, Box, IconButton, Typography, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Tooltip, styled, useTheme, Select, MenuItem, Grid } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import { useRecoilState } from 'recoil';
+import { themeState } from '../../utils/state';
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import NoteIcon from "@mui/icons-material/Note";
-import TimelineIcon from "@mui/icons-material/Timeline"; // Import icon for roadmap
+import TimelineIcon from "@mui/icons-material/Timeline";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
 const StyledAppBar = styled(AppBar)(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -24,6 +29,10 @@ const StyledAppBar = styled(AppBar)(({ theme, open }) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
+  [theme.breakpoints.down('sm')]: {
+    height: '56px',
+    padding: theme.spacing(1),
+  },
 }));
 
 const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
@@ -32,7 +41,6 @@ const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
   whiteSpace: "nowrap",
   boxSizing: "border-box",
   ...(open && {
-    ...theme.mixins.drawer,
     "& .MuiDrawer-paper": {
       width: drawerWidth,
       transition: theme.transitions.create("width", {
@@ -51,6 +59,11 @@ const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
       overflowX: "hidden",
     },
   }),
+  [theme.breakpoints.down('sm')]: {
+    "& .MuiDrawer-paper": {
+      width: open ? drawerWidth : theme.spacing(9),
+    },
+  },
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -61,37 +74,26 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-const MainContent = styled("main")(({ theme, open }) => ({
+const MainContent = styled(Box)(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
+  marginLeft: open ? drawerWidth : theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${drawerWidth}px`,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+  minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+  overflow: "hidden",
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
     marginLeft: 0,
-  }),
-}));
-
-const DrawerItemButton = styled(ListItemButton)(({ theme, open }) => ({
-  borderRadius: theme.shape.borderRadius,
-  margin: theme.spacing(1),
-  padding: theme.spacing(1),
-  "&:hover": {
-    ...(!open
-      ? { backgroundColor: theme.palette.action.hover }
-      : { backgroundColor: theme.palette.primary.light }),
   },
 }));
 
 const Navbar = () => {
   const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useRecoilState(themeState);
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -101,45 +103,60 @@ const Navbar = () => {
     setDrawerOpen(false);
   };
 
+  const handleThemeChange = (event) => {
+    setSelectedTheme(event.target.value);
+    localStorage.setItem('selectedTheme', event.target.value);
+  };
+
   const drawerItems = (
     <List>
-      <Tooltip title="Boards" placement="right" arrow>
-        <DrawerItemButton component={RouterLink} to="/boards" open={drawerOpen}>
-          <ListItemIcon>
-            <DashboardOutlinedIcon />
-          </ListItemIcon>
-          {drawerOpen && <ListItemText primary="Boards" />}
-        </DrawerItemButton>
-      </Tooltip>
-      <Tooltip title="Tables" placement="right" arrow>
-        <DrawerItemButton component={RouterLink} to="/tables" open={drawerOpen}>
-          <ListItemIcon>
-            <TableChartOutlinedIcon />
-          </ListItemIcon>
-          {drawerOpen && <ListItemText primary="Tables" />}
-        </DrawerItemButton>
-      </Tooltip>
-      <Tooltip title="Notes" placement="right" arrow>
-        <DrawerItemButton component={RouterLink} to="/" open={drawerOpen}>
-          <ListItemIcon>
-            <NoteIcon />
-          </ListItemIcon>
-          {drawerOpen && <ListItemText primary="Notes" />}
-        </DrawerItemButton>
-      </Tooltip>
-      <Tooltip title="Roadmap" placement="right" arrow>
-        <DrawerItemButton component={RouterLink} to="/roadmap" open={drawerOpen}>
-          <ListItemIcon>
-            <TimelineIcon />
-          </ListItemIcon>
-          {drawerOpen && <ListItemText primary="Roadmap" />}
-        </DrawerItemButton>
-      </Tooltip>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Tooltip title="Boards" placement="right" arrow>
+            <ListItemButton component={RouterLink} to="/boards">
+              <ListItemIcon>
+                <DashboardOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Boards" />
+            </ListItemButton>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={12}>
+          <Tooltip title="Tables" placement="right" arrow>
+            <ListItemButton component={RouterLink} to="/tables">
+              <ListItemIcon>
+                <TableChartOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Tables" />
+            </ListItemButton>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={12}>
+          <Tooltip title="Notes" placement="right" arrow>
+            <ListItemButton component={RouterLink} to="/">
+              <ListItemIcon>
+                <NoteIcon />
+              </ListItemIcon>
+              <ListItemText primary="Notes" />
+            </ListItemButton>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={12}>
+          <Tooltip title="Roadmap" placement="right" arrow>
+            <ListItemButton component={RouterLink} to="/roadmap">
+              <ListItemIcon>
+                <TimelineIcon />
+              </ListItemIcon>
+              <ListItemText primary="Roadmap" />
+            </ListItemButton>
+          </Tooltip>
+        </Grid>
+      </Grid>
     </List>
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100vh" }}>
       <StyledAppBar position="fixed" open={drawerOpen}>
         <Toolbar>
           <IconButton
@@ -151,9 +168,33 @@ const Navbar = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              fontWeight: '500',
+              marginLeft: 2,
+              [theme.breakpoints.down('sm')]: { fontSize: '1rem', marginLeft: 1 },
+            }}
+          >
             Sticky Memo
           </Typography>
+          <Select
+            value={selectedTheme}
+            onChange={handleThemeChange}
+            sx={{
+              marginLeft: 'auto',
+              color: theme.palette.text.primary,
+              backgroundColor: theme.palette.background.default,
+              borderRadius: '8px',
+              '&:hover': { backgroundColor: theme.palette.action.hover },
+              [theme.breakpoints.down('sm')]: { fontSize: '0.875rem', padding: theme.spacing(0.5) },
+            }}
+          >
+            <MenuItem value="atlassian">Atlassian</MenuItem>
+            <MenuItem value="azure">Azure</MenuItem>
+            <MenuItem value="fireflies">Fireflies</MenuItem>
+          </Select>
         </Toolbar>
       </StyledAppBar>
       <StyledDrawer variant="permanent" open={drawerOpen}>
@@ -165,8 +206,9 @@ const Navbar = () => {
         {drawerItems}
       </StyledDrawer>
       <MainContent open={drawerOpen}>
-        <DrawerHeader />
-        {/* Main content goes here */}
+        <Grid container spacing={2}>
+          {/* Main content goes here */}
+        </Grid>
       </MainContent>
     </Box>
   );

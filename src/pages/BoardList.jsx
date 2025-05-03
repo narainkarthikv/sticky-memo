@@ -4,12 +4,11 @@ import { itemsState, snackbarState } from '../utils/state';
 import BoardCard from '../components/Board/BoardCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { boardListStyles, scrollBoxStyles } from '../styles/boardListStyles';
 import AddButton from '../components/common/AddButton';
-
 
 const BoardList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -81,36 +80,38 @@ const BoardList = (props) => {
     <Box sx={boardListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <CommonFilter filter={filter} setFilter={setFilter} />
-      <Box sx={scrollBoxStyles}>
+      <Grid container spacing={2} sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (
-          <BoardCard
-            key={index}
-            item={item}
-            index={index}
-            isEditing={isEditing}
-            editingIndex={editingIndex}
-            editedTitle={editedTitle}
-            setEditedTitle={setEditedTitle}
-            editedContent={editedContent}
-            setEditedContent={setEditedContent}
-            handleEdit={handleEdit}
-            handleSave={handleSave}
-            handleClickPopover={handleClickPopover}
-            handleClosePopover={handleClosePopover}
-            anchorEl={anchorEl}
-            setAnchorEl={setAnchorEl}
-            handleDragStart={handleDragStart}
-            handleDrop={handleDrop}
-            handleDragOver={handleDragOver}
-            setItems={setItems}
-            setSnackbar={setSnackbar}
-            items={items}
-          />
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <BoardCard
+              key={index}
+              item={item}
+              index={index}
+              isEditing={isEditing}
+              editingIndex={editingIndex}
+              editedTitle={editedTitle}
+              setEditedTitle={setEditedTitle}
+              editedContent={editedContent}
+              setEditedContent={setEditedContent}
+              handleEdit={handleEdit}
+              handleSave={handleSave}
+              handleClickPopover={handleClickPopover}
+              handleClosePopover={handleClosePopover}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              handleDragStart={handleDragStart}
+              handleDrop={handleDrop}
+              handleDragOver={handleDragOver}
+              setItems={setItems}
+              setSnackbar={setSnackbar}
+              items={items}
+            />
+          </Grid>
         ))}
-        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
           <AddButton onClick={addBoard} />
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

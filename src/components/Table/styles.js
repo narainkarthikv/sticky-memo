@@ -2,13 +2,17 @@ import theme from '../../theme';
 
 export const tableRowStyles = (item) => ({
   color: theme.palette.text.primary,
-  backgroundColor: item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main,
-  width: '100%',
-  height: 'auto',
-  position: 'relative',
-  zIndex: 1,
-  transition: 'transform 0.3s ease-in, background-color 0.3s ease-in',
-  '&:hover': { transform: 'scale(1.01)' },
+  backgroundColor: item.checked
+    ? theme.palette.success.light
+    : item.held
+    ? theme.palette.warning.light
+    : theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  },
 });
 
 export const buttonStyle = {
@@ -36,14 +40,19 @@ export const popoverTypographyStyles = {
 };
 
 export const createRowBoxStyles = {
-  width: '250px',
-  height: '120px',
+  width: '100%',
+  maxWidth: theme.spacing(50),
+  height: 'auto',
   backgroundColor: theme.palette.background.paper,
-  padding: '1.3em',
-  margin: '1.3em',
-  borderRadius: '20px',
+  padding: theme.spacing(2),
+  margin: theme.spacing(2),
+  borderRadius: theme.spacing(2),
   border: `3px ${theme.palette.primary.light} outset`,
-  boxShadow: 'solid 10 2px 5px #aaa;',
+  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+  },
 };
 
 export const textFieldStyles = {
@@ -52,6 +61,11 @@ export const textFieldStyles = {
   fontSize: '1em',
   fontWeight: 'bold',
   fontFamily: theme.typography.fontFamily,
+  gap: theme.spacing(1),
+  padding: theme.spacing(1),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(0.5),
+  },
 };
 
 export const iconButtonStyles = {
@@ -76,3 +90,22 @@ export const iconButtonStyles = {
     transform: 'translateY(1px)',
   },
 };
+
+export const cardStyles = (item) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.spacing(1),
+  padding: theme.spacing(2),
+  margin: theme.spacing(1),
+  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.02)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(0.5),
+  },
+});

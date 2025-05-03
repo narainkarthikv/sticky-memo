@@ -4,7 +4,7 @@ import { itemsState, snackbarState } from '../utils/state';
 import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
@@ -83,36 +83,38 @@ const NoteList = (props) => {
         <CommonFilter filter={filter} setFilter={setFilter} />
       </Box>
 
-      <Box sx={scrollBoxStyles}>
+      <Grid container spacing={2} sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (
-          <NoteCard
-            key={index}
-            item={item}
-            index={index}
-            isEditing={isEditing}
-            editingIndex={editingIndex}
-            editedTitle={editedTitle}
-            setEditedTitle={setEditedTitle}
-            editedContent={editedContent}
-            setEditedContent={setEditedContent}
-            handleEdit={handleEdit}
-            handleSave={handleSave}
-            handleClickPopover={handleClickPopover}
-            handleClosePopover={handleClosePopover}
-            anchorEl={anchorEl}
-            setAnchorEl={setAnchorEl}
-            handleDragStart={handleDragStart}
-            handleDrop={handleDrop}
-            handleDragOver={handleDragOver}
-            setItems={setItems}
-            setSnackbar={setSnackbar}
-            items={items}
-          />
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <NoteCard
+              key={index}
+              item={item}
+              index={index}
+              isEditing={isEditing}
+              editingIndex={editingIndex}
+              editedTitle={editedTitle}
+              setEditedTitle={setEditedTitle}
+              editedContent={editedContent}
+              setEditedContent={setEditedContent}
+              handleEdit={handleEdit}
+              handleSave={handleSave}
+              handleClickPopover={handleClickPopover}
+              handleClosePopover={handleClosePopover}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              handleDragStart={handleDragStart}
+              handleDrop={handleDrop}
+              handleDragOver={handleDragOver}
+              setItems={setItems}
+              setSnackbar={setSnackbar}
+              items={items}
+            />
+          </Grid>
         ))}
-        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
           <AddButton onClick={addNote} />
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

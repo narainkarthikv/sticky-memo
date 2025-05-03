@@ -3,18 +3,30 @@ import theme from '../../theme';
 export const cardStyles = (item) => ({
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main,
-  borderRadius: '8px',
-  width: '300px',
-  height: 'auto',
-  minHeight: '250px',
-  padding: 0,
-  transition: 'transform 0.3s ease-in, background-color 0.3s ease-in',
-  margin: '20px 15px 20px 0px',
-  border: 'none',
-  overflow: 'hidden',
+  background: `linear-gradient(135deg, ${
+    item.checked ? theme.palette.success?.light || '#d4edda' : 
+    item.held ? theme.palette.warning?.light || '#fff3cd' : 
+    '#e2e3e5'
+  }, ${
+    item.checked ? theme.palette.success?.main || '#28a745' : 
+    item.held ? theme.palette.warning?.main || '#ffc107' : 
+    '#6c757d'
+  })`,
+  borderRadius: theme.spacing(1.5),
+  width: '280px', // Reduced width
+  minHeight: theme.spacing(28), // Adjusted height
+  padding: theme.spacing(1.5), // Reduced padding
+  margin: theme.spacing(1.5), // Reduced margin
+  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
   '&:hover': {
-    transform: 'scale(1.02)',
+    transform: 'scale(1.05)',
+    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.2)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '90%', // Adjusted for smaller screens
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
   },
 });
 
@@ -70,9 +82,13 @@ export const textFieldStyles = {
 export const dateContainerStyles = {
   display: 'flex',
   alignItems: 'center',
-  gap: 1,
+  gap: theme.spacing(1), // Reduced gap
   flexWrap: 'wrap',
-  mt: 2,
+  marginTop: theme.spacing(2),
+  padding: theme.spacing(1), // Reduced padding
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(0.5),
+  },
 };
 
 export const dateFieldStyles = {
@@ -82,7 +98,7 @@ export const dateFieldStyles = {
   padding: '6px 10px',
   borderRadius: '4px',
   border: '1px solid rgba(255, 255, 255, 0.2)',
-  color: theme.palette.accent.contrastText,
+  color: theme.palette.text.primary,
   '&:hover': {
     backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
@@ -90,6 +106,6 @@ export const dateFieldStyles = {
 
 export const dateValueStyles = {
   fontSize: '0.875rem',
-  color: theme.palette.accent.contrastText,
+  color: theme.palette.text.primary,
   fontWeight: 500,
 };

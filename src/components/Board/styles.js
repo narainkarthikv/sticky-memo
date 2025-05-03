@@ -1,25 +1,37 @@
 import theme from '../../theme';
+import { styled } from '@mui/system';
 
 export const cardStyles = (item) => ({
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main,
-  borderRadius: '12px',
-  width: '300px',
-  height: 'auto',
-  minHeight: '250px',
-  padding: '1em',
-  transition: 'transform 0.3s ease-in, background-color 0.3s ease-in',
-  margin: '20px 15px 20px 0px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  '&:hover': { transform: 'scale(1.02)', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)' },
+  background: `linear-gradient(135deg, ${
+    item.checked ? theme.palette.success.light : item.held ? theme.palette.warning.light : theme.palette.accent.light
+  }, ${
+    item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main
+  })`,
+  borderRadius: theme.spacing(2),
+  width: '280px', // Reduced width for better spacing
+  minHeight: theme.spacing(28), // Adjusted height
+  padding: theme.spacing(1.5), // Reduced padding
+  margin: theme.spacing(1.5), // Reduced margin
+  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.2)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '90%', // Adjusted for smaller screens
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
+  },
 });
 
 export const buttonStyle = {
   color: theme.palette.primary.contrastText,
   borderRadius: '100%',
   backgroundColor: theme.palette.secondary.main,
-  padding: '3px',
+  padding: '2px', // Reduced padding for compactness
 };
 
 export const typographyStyles = {
@@ -59,14 +71,19 @@ export const textFieldStyles = {
 };
 
 export const boxStyles = {
-  width: '250px',
-  height: '120px',
+  width: '100%',
+  maxWidth: theme.spacing(50),
+  height: 'auto',
   backgroundColor: theme.palette.background.paper,
-  padding: '1.3em',
-  margin: '1.3em',
-  borderRadius: '20px',
+  padding: theme.spacing(2),
+  margin: theme.spacing(2),
+  borderRadius: theme.spacing(2),
   border: `3px ${theme.palette.primary.light} outset`,
-  boxShadow: 'solid 10 2px 5px #aaa;',
+  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+  },
 };
 
 export const iconButtonStyles = {

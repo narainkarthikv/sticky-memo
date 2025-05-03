@@ -14,8 +14,13 @@ const theme = createTheme({
       dark: '#c60055',
       contrastText: '#ffffff',
     },
+    accent: {
+      light: '#e2e3e5',
+      main: '#6c757d',
+      contrastText: '#ffffff',
+    },
     background: {
-      default: '#f5f5f5',
+      default: '#f9f9f9',
       paper: '#ffffff',
     },
     text: {
@@ -23,36 +28,12 @@ const theme = createTheme({
       secondary: '#757575',
       disabled: '#bdbdbd',
     },
-    info: {
-      main: '#0288d1',
-      light: '#03a9f4',
-      dark: '#01579b',
-      contrastText: '#ffffff',
-    },
-    success: {
-      main: '#4caf50',
-      light: '#81c784',
-      dark: '#388e3c',
-      contrastText: '#ffffff',
-    },
-    warning: {
-      main: '#ff9800',
-      light: '#ffb74d',
-      dark: '#f57c00',
-      contrastText: '#ffffff',
-    },
-    accent: {
-      main: '#ffeb3b',
-      light: '#fff176',
-      dark: '#fbc02d',
-      contrastText: '#212121',
-    },
   },
   typography: {
-    fontFamily: "'Outfit', sans-serif", // Ensure Outfit is set here
+    fontFamily: "'Outfit','Poppins', sans-serif",
     h1: {
       fontSize: '2.5rem',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.2,
       letterSpacing: '-0.02em',
     },
@@ -62,34 +43,14 @@ const theme = createTheme({
       lineHeight: 1.3,
       letterSpacing: '-0.01em',
     },
-    h3: {
-      fontSize: '1.75rem',
-      fontWeight: 500,
-      lineHeight: 1.4,
-    },
     body1: {
       fontSize: '1rem',
       fontWeight: 400,
       lineHeight: 1.5,
     },
-    body2: {
-      fontSize: '0.875rem',
-      fontWeight: 400,
-      lineHeight: 1.43,
-    },
     button: {
       fontSize: '0.875rem',
-      fontWeight: 500,
-      textTransform: 'uppercase',
-    },
-    caption: {
-      fontSize: '0.75rem',
-      fontWeight: 400,
-      lineHeight: 1.66,
-    },
-    overline: {
-      fontSize: '0.75rem',
-      fontWeight: 400,
+      fontWeight: 600,
       textTransform: 'uppercase',
     },
   },

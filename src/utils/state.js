@@ -33,3 +33,11 @@ export const snackbarState = atom({
   },
   effects_UNSTABLE: [persistAtom],
 });
+
+/**
+ * State to manage theme
+ */
+export const themeState = atom({
+  key: 'themeState',
+  default: localStorage.getItem('selectedTheme') || 'atlassian',
+});

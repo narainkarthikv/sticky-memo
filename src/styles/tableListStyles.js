@@ -2,9 +2,16 @@ import theme from '../theme';
 
 export const tableListStyles = {
   display: 'flex',
-  justifyContent: 'center',
+  flexDirection: 'column',
   alignItems: 'center',
-  overflowY: 'hidden',
+  gap: theme.spacing(2),
+  padding: theme.spacing(2),
+  width: '100%',
+  height: '100vh',
+  '@media (max-width: 600px)': {
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
+  },
 };
 
 export const tableStyles = {
@@ -12,6 +19,10 @@ export const tableStyles = {
   display: 'table',
   margin: 'auto',
   overflowY: 'auto',
+  '@media (max-width: 600px)': {
+    width: '100%',
+    margin: '0',
+  },
 };
 
 export const tableHeadStyles = {
@@ -36,13 +47,20 @@ export const boxStyles = {
 };
 
 export const scrollBoxStyles = {
-  width: '100%',
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: theme.spacing(2),
+  padding: theme.spacing(2),
   overflowY: 'auto',
-  margin: '0 auto',
   '&::-webkit-scrollbar': { width: '8px', backgroundColor: '#f1f1f1', borderRadius: '8px' },
   '&::-webkit-scrollbar-thumb': { backgroundColor: theme.palette.secondary.main, borderRadius: '8px', transition: 'background-color 0.3s ease-in-out' },
   '&::-webkit-scrollbar-thumb:hover': { backgroundColor: theme.palette.accent.main },
   '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1', borderRadius: '8px' },
+  '@media (max-width: 600px)': {
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
+  },
 };
 
 export const noteListContainer = {
@@ -50,6 +68,10 @@ export const noteListContainer = {
   flexWrap: 'wrap',
   gap: '16px',
   padding: '16px',
+  '@media (max-width: 600px)': {
+    gap: theme.spacing(1),
+    padding: theme.spacing(1),
+  },
 };
 
 export const addButtonContainer = {
@@ -58,4 +80,7 @@ export const addButtonContainer = {
   alignItems: 'center',
   width: '100%',
   minHeight: '100px', // Ajusta según sea necesario
+  '@media (max-width: 600px)': {
+    minHeight: '80px',
+  },
 };
