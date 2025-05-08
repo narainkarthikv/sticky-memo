@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { AppBar, Box, IconButton, Typography, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Tooltip, styled, useTheme, Select, MenuItem, Grid } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-import { useRecoilState } from 'recoil';
+import { AppBar, Box, IconButton, Typography, Drawer, Toolbar, styled, useTheme, Grid } from "@mui/material";
 import { themeState } from '../../utils/state';
+import { useRecoilState } from 'recoil';
 import MenuIcon from "@mui/icons-material/Menu";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
-import NoteIcon from "@mui/icons-material/Note";
-import TimelineIcon from "@mui/icons-material/Timeline";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import DrawerItems from "./Navbar/DrawerItems";
+import ThemeSelector from "./Navbar/ThemeSelector";
 
 const drawerWidth = 240;
 
@@ -95,65 +92,8 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedTheme, setSelectedTheme] = useRecoilState(themeState);
 
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-  };
-
-  const handleThemeChange = (event) => {
-    setSelectedTheme(event.target.value);
-    localStorage.setItem('selectedTheme', event.target.value);
-  };
-
-  const drawerItems = (
-    <List>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Tooltip title="Boards" placement="right" arrow>
-            <ListItemButton component={RouterLink} to="/boards">
-              <ListItemIcon>
-                <DashboardOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Boards" />
-            </ListItemButton>
-          </Tooltip>
-        </Grid>
-        <Grid item xs={12}>
-          <Tooltip title="Tables" placement="right" arrow>
-            <ListItemButton component={RouterLink} to="/tables">
-              <ListItemIcon>
-                <TableChartOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Tables" />
-            </ListItemButton>
-          </Tooltip>
-        </Grid>
-        <Grid item xs={12}>
-          <Tooltip title="Notes" placement="right" arrow>
-            <ListItemButton component={RouterLink} to="/">
-              <ListItemIcon>
-                <NoteIcon />
-              </ListItemIcon>
-              <ListItemText primary="Notes" />
-            </ListItemButton>
-          </Tooltip>
-        </Grid>
-        <Grid item xs={12}>
-          <Tooltip title="Roadmap" placement="right" arrow>
-            <ListItemButton component={RouterLink} to="/roadmap">
-              <ListItemIcon>
-                <TimelineIcon />
-              </ListItemIcon>
-              <ListItemText primary="Roadmap" />
-            </ListItemButton>
-          </Tooltip>
-        </Grid>
-      </Grid>
-    </List>
-  );
+  const handleDrawerOpen = () => setDrawerOpen(true);
+  const handleDrawerClose = () => setDrawerOpen(false);
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
@@ -179,22 +119,7 @@ const Navbar = () => {
           >
             Sticky Memo
           </Typography>
-          <Select
-            value={selectedTheme}
-            onChange={handleThemeChange}
-            sx={{
-              marginLeft: 'auto',
-              color: theme.palette.text.primary,
-              backgroundColor: theme.palette.background.default,
-              borderRadius: '8px',
-              '&:hover': { backgroundColor: theme.palette.action.hover },
-              [theme.breakpoints.down('sm')]: { fontSize: '0.875rem', padding: theme.spacing(0.5) },
-            }}
-          >
-            <MenuItem value="atlassian">Atlassian</MenuItem>
-            <MenuItem value="azure">Azure</MenuItem>
-            <MenuItem value="fireflies">Fireflies</MenuItem>
-          </Select>
+          <ThemeSelector selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme} />
         </Toolbar>
       </StyledAppBar>
       <StyledDrawer variant="permanent" open={drawerOpen}>
@@ -203,7 +128,7 @@ const Navbar = () => {
             {theme.direction === "rtl" ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </DrawerHeader>
-        {drawerItems}
+        <DrawerItems />
       </StyledDrawer>
       <MainContent open={drawerOpen}>
         <Grid container spacing={2}>
