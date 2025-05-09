@@ -26,6 +26,11 @@ const ThemeSelector = ({ selectedTheme, setSelectedTheme }) => {
       <MenuItem value="atlassian">Atlassian</MenuItem>
       <MenuItem value="azure">Azure</MenuItem>
       <MenuItem value="fireflies">Fireflies</MenuItem>
+      <MenuItem value="spotify">Spotify</MenuItem>
+      <MenuItem value="netflix">Netflix</MenuItem>
+      <MenuItem value="github">GitHub</MenuItem>
+      <MenuItem value="airbnb">Airbnb</MenuItem>
+      <MenuItem value="dribbble">Dribbble</MenuItem>
     </Select>
   );
 };
