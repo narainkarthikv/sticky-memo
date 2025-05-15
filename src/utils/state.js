@@ -39,5 +39,15 @@ export const snackbarState = atom({
  */
 export const themeState = atom({
   key: 'themeState',
-  default: localStorage.getItem('selectedTheme') || 'atlassian',
+  default: 'atlassian', 
+  effects_UNSTABLE: [persistAtom],
+});
+
+/**
+ * State to manage theme mode (light or dark)
+ */
+export const themeModeState = atom({
+  key: 'themeModeState',
+  default: 'light',
+  effects_UNSTABLE: [persistAtom],
 });

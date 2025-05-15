@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilState } from 'recoil';
 import App from "./App";
 import './main.css';
 
@@ -8,15 +8,20 @@ import { Suspense } from 'react'
 import LoadingSpinner from './components/Loading';
 
 import { ThemeProvider } from '@mui/material/styles';
-import { useRecoilValue } from 'recoil';
-import { themeState } from './utils/state';
+import { themeModeState, themeState } from './utils/state';
 import { themes } from './themes';
+import { CssBaseline } from '@mui/material';
 
 const AppWrapper = () => {
-  const selectedTheme = useRecoilValue(themeState);
+  const [selectedTheme] = useRecoilState(themeState);
+  // Atom for mode: 'light' or 'dark'
+  const [mode] = useRecoilState(themeModeState);
+  // Safely resolve theme, fallback to airbnb.light if missing
+  const theme = (themes[selectedTheme] && themes[selectedTheme][mode]) || themes.airbnb.light;
 
   return (
-    <ThemeProvider theme={themes[selectedTheme]}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
     </ThemeProvider>
   );
