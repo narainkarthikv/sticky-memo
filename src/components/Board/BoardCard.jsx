@@ -92,7 +92,7 @@ const BoardCard = ({
       onDragOver={(e) => handleDragOver(e)}
       sx={cardStyles(item)}
     >
-      <CardContent sx={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column', color: 'inherit'}}>
         <Typography sx={typographyStyles}>
           <>
             {isEditing && editingIndex === index ? (

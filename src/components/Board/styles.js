@@ -2,6 +2,7 @@ import theme from '../../theme';
 import { styled } from '@mui/system';
 
 export const cardStyles = (item) => ({
+  color: theme.palette.text.primary,
   display: 'flex',
   flexDirection: 'column',
   background: `linear-gradient(135deg, ${

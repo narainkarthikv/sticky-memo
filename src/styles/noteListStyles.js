@@ -11,7 +11,9 @@ export const noteListStyles = {
   backgroundColor: theme.palette.background.default,
   width: '100%',
   height: 'auto',
-  minHeight: '100vh',
+  minHeight: '52vh',
+  bgcolor: 'background.default',
+  color:  'text.primary',
   '@media (max-width: 600px)': {
     padding: theme.spacing(1),
     gap: theme.spacing(1),
@@ -24,6 +26,8 @@ export const scrollBoxStyles = {
   gap: theme.spacing(5), // Reduced gap
   padding: theme.spacing(1), // Reduced padding
   overflowY: 'auto',
+  bgcolor: 'background.default',
+  color:  'text.primary',
   '&::-webkit-scrollbar': { width: '2px', backgroundColor: '#f1f1f1', borderRadius: '8px' },
   '&::-webkit-scrollbar-thumb': { backgroundColor: theme.palette.secondary.main, borderRadius: '8px', transition: 'background-color 0.3s ease-in-out' },
   '&::-webkit-scrollbar-thumb:hover': { backgroundColor: theme.palette.accent.main },

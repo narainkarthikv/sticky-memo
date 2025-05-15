@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { AppBar, Box, IconButton, Typography, Drawer, Toolbar, styled, useTheme, Grid } from "@mui/material";
-import { themeState } from '../../utils/state';
+import { AppBar, Box, IconButton, Typography, Drawer, Toolbar, styled, useTheme, Grid, Tooltip } from "@mui/material";
+import { themeModeState, themeState } from '../../utils/state';
 import { useRecoilState } from 'recoil';
 import MenuIcon from "@mui/icons-material/Menu";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, Brightness4, Brightness7 } from "@mui/icons-material";
 import DrawerItems from "./Navbar/DrawerItems";
 import ThemeSelector from "./Navbar/ThemeSelector";
 
@@ -91,9 +91,11 @@ const Navbar = () => {
   const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedTheme, setSelectedTheme] = useRecoilState(themeState);
+  const [mode, setMode] = useRecoilState(themeModeState);
 
   const handleDrawerOpen = () => setDrawerOpen(true);
-  const handleDrawerClose = () => setDrawerOpen(false);
+  const handleDrawerClose = () => setDrawerOpen(false);  
+  const toggleMode = () => setMode(prev => prev === 'light' ? 'dark' : 'light');
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
@@ -108,6 +110,7 @@ const Navbar = () => {
           >
             <MenuIcon />
           </IconButton>
+
           <Typography
             variant="h6"
             noWrap
@@ -119,9 +122,19 @@ const Navbar = () => {
           >
             Sticky Memo
           </Typography>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>  
+            <IconButton onClick={toggleMode} color="inherit">
+              {mode === 'light' ? <Brightness4 /> : <Brightness7 />}
+            </IconButton>
+          </Tooltip>
+
           <ThemeSelector selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme} />
         </Toolbar>
       </StyledAppBar>
+
       <StyledDrawer variant="permanent" open={drawerOpen}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -130,6 +143,7 @@ const Navbar = () => {
         </DrawerHeader>
         <DrawerItems />
       </StyledDrawer>
+
       <MainContent open={drawerOpen}>
         <Grid container spacing={2}>
           {/* Main content goes here */}

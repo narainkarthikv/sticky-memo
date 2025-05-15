@@ -12,6 +12,8 @@ export const boardListStyles = {
   padding: theme.spacing(1),
   width: '100%',
   height: 'auto',
+  bgcolor: 'background.default',
+  color:  'text.primary',
   minHeight: '100vh',
   '@media (max-width: 600px)': {
     padding: theme.spacing(1),

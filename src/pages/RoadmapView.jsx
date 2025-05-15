@@ -25,7 +25,7 @@ const RoadmapView = () => {
   }, {});
 
   return (
-    <Box sx={{ padding: 3, backgroundColor: "#f9f9f9", color: "#000", height: "100vh" }}>
+    <Box sx={{ padding: 3,   bgcolor: 'background.default', color:  'text.primary', height: "100vh" }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", color: "#333" }}>
         Roadmap
       </Typography>

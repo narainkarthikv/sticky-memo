@@ -93,15 +93,15 @@ const TableCard = ({
       onDragOver={(e) => handleDragOver(e)}
       sx={tableRowStyles(item)} // Apply the styles
     >
-      <TableCell align='center'>
-        {isEditing && editingIndex === index ? (
+    <TableCell align="center" sx={{ color: 'inherit' }}>
+    {isEditing && editingIndex === index ? (
           <TextField onChange={(e) => setEditedTitle(e.target.value)} defaultValue={item.title} fullWidth />
         ) : (
           <span>{item.title}</span>
         )}
       </TableCell>
-      <TableCell align='center'>
-        <Box sx={boxStyles}>
+      <TableCell align="center" sx={{ color: 'inherit' }}>
+      <Box sx={boxStyles}>
           <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ flex: { xs: '1 1 50%', sm: '1 1 66%' } }}>
               {isEditing && editingIndex === index ? (

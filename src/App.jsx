@@ -13,8 +13,19 @@ function App() {
 
   return (
     <Router>
-      <Box sx={{ textAlign: 'center' }}>
-        <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <Box sx={{ 
+        textAlign: 'center' ,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',                // fill viewport
+        bgcolor: 'background.default',     // theme background
+        color: 'text.primary',             // theme text color
+      }}>
+        <Box sx={{ 
+          display: 'flex', flexGrow: 1 ,
+          bgcolor: 'background.default',     // theme background
+          color: 'text.primary',             // theme text color
+        }}>
           <Navbar />
           <Box
             sx={{
@@ -22,6 +33,8 @@ function App() {
               flexDirection: 'column',
               flexGrow: 1,
               width: '100%',
+              bgcolor: 'background.default',     // theme background
+              color: 'text.primary',             // theme text color
             }}>
             <Routes>
               <Route exact path='/' element={<NoteList />} />
