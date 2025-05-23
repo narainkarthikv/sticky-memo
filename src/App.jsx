@@ -11,54 +11,32 @@ import { Box } from "@mui/material";
 import { ItemProvider } from './context/ItemContext';
 
 function App() {
-
   return (
-<<<<<<< HEAD
-    <Router>
-      <Box sx={{ 
-        textAlign: 'center' ,
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',                // fill viewport
-        bgcolor: 'background.default',     // theme background
-        color: 'text.primary',             // theme text color
-      }}>
+    <ItemProvider>
+      <Router>
         <Box sx={{ 
-          display: 'flex', flexGrow: 1 ,
-          bgcolor: 'background.default',     // theme background
-          color: 'text.primary',             // theme text color
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          bgcolor: 'background.default',
+          color: 'text.primary',
         }}>
-          <Navbar />
-          <Box
-            sx={{
+          <Box sx={{ 
+            display: 'flex', 
+            flexGrow: 1,
+            bgcolor: 'background.default',
+            color: 'text.primary',
+          }}>
+            <Navbar />
+            <Box sx={{
               display: 'flex',
               flexDirection: 'column',
               flexGrow: 1,
               width: '100%',
-              bgcolor: 'background.default',     // theme background
-              color: 'text.primary',             // theme text color
+              bgcolor: 'background.default',
+              color: 'text.primary',
             }}>
-            <Routes>
-              <Route exact path='/' element={<NoteList />} />
-              <Route path='/tables' element={<TableList />} />
-              <Route path='/boards' element={<BoardList />} />
-              <Route path='/roadmap' element={<RoadmapView />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-            {/* <Footer /> */}
-=======
-    <ItemProvider>
-      <Router>
-        <Box sx={{ textAlign: 'center' }}>
-          <Box sx={{ display: 'flex', flexGrow: 1 }}>
-            <Navbar />
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: 1,
-                width: '100%',
-              }}>
               <Routes>
                 <Route exact path='/' element={<NoteList />} />
                 <Route path='/tables' element={<TableList />} />
@@ -68,7 +46,6 @@ function App() {
               </Routes>
               {/* <Footer /> */}
             </Box>
->>>>>>> 501a491 (fix(refactor): refactor the structure of codebase)
           </Box>
         </Box>
       </Router>
