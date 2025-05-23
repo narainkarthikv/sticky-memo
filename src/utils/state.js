@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist();
@@ -19,6 +19,26 @@ export const itemsState = atom({
   key: 'itemsState',
   default: [],
   effects_UNSTABLE: [persistAtom],
+});
+
+export const filteredItemsState = selector({
+  key: 'filteredItemsState',
+  get: ({ get }) => {
+    const items = get(itemsState);
+    const filter = get(filterState);
+    return filter ? items.filter(item => 
+      item.title.toLowerCase().includes(filter.toLowerCase()) ||
+      item.content.toLowerCase().includes(filter.toLowerCase())
+    ) : items;
+  }
+});
+
+/**
+ * State to manage filter text
+ */
+export const filterState = atom({
+  key: 'filterState',
+  default: '',
 });
 
 /**

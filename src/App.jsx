@@ -8,10 +8,12 @@ import BoardList from "./pages/BoardList";
 import NotFoundPage from "./pages/NotFoundPage";
 import RoadmapView from "./pages/RoadmapView";
 import { Box } from "@mui/material";
+import { ItemProvider } from './context/ItemContext';
 
 function App() {
 
   return (
+<<<<<<< HEAD
     <Router>
       <Box sx={{ 
         textAlign: 'center' ,
@@ -44,10 +46,33 @@ function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
             {/* <Footer /> */}
+=======
+    <ItemProvider>
+      <Router>
+        <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{ display: 'flex', flexGrow: 1 }}>
+            <Navbar />
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1,
+                width: '100%',
+              }}>
+              <Routes>
+                <Route exact path='/' element={<NoteList />} />
+                <Route path='/tables' element={<TableList />} />
+                <Route path='/boards' element={<BoardList />} />
+                <Route path='/roadmap' element={<RoadmapView />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+              {/* <Footer /> */}
+            </Box>
+>>>>>>> 501a491 (fix(refactor): refactor the structure of codebase)
           </Box>
         </Box>
-      </Box>
-    </Router>
+      </Router>
+    </ItemProvider>
   );
 }
 
