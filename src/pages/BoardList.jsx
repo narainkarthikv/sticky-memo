@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
 import BoardCard from '../components/Board/BoardCard';
@@ -18,6 +18,14 @@ const BoardList = (props) => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
+
+  // Cleanup effect for drag and drop
+  useEffect(() => {
+    return () => {
+      setDraggingIndex(null);
+      setAnchorEl(null);
+    };
+  }, []);
 
   const {
     isEditing,

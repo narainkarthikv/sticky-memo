@@ -4,43 +4,44 @@
  * @param {Object} newItem - The new item to be added.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
- * @returns {boolean} - Returns true if the item was added successfully, false otherwise.
+ * @returns {Promise<boolean>} - Returns a promise that resolves to true if the item was added successfully, false otherwise.
  */
-export const addItem = (setItems, newItem, setSnackbar, context) => {
+export const addItem = async (setItems, newItem, setSnackbar, context) => {
   if (!newItem.title.trim() || !newItem.content.trim()) {
-    // Close the current Snackbar, then show the warning
-    setSnackbar({ open: false, message: '', severity: '' });
+    await setSnackbar({ open: false, message: '', severity: '' });
 
+    return new Promise(resolve => {
+      setTimeout(() => {
+        setSnackbar({
+          open: true,
+          message: `Don't Waste ${context}s :)`,
+          severity: "warning",
+        });
+        resolve(false);
+      }, 300);
+    });
+  }
+
+  await new Promise(resolve => {
+    setItems(prevItems => {
+      const newState = [...prevItems, { ...newItem, checked: false, held: false, all: true }];
+      resolve(newState);
+      return newState;
+    });
+  });
+
+  await setSnackbar({ open: false, message: '', severity: '' });
+
+  return new Promise(resolve => {
     setTimeout(() => {
       setSnackbar({
         open: true,
-        message: `Don't Waste ${context}s :)`,
-        severity: "warning",
+        message: `${context} added!`,
+        severity: "success",
       });
-    }, 300); // Small delay to ensure the previous notification is unmounted
-
-    // Return early without resetting the state
-    return false;
-  }
-
-  setItems((prevItems) => [
-    ...prevItems,
-    { ...newItem, checked: false, held: false, all: true },
-  ]);
-
-  // Close the current Snackbar, then show the success message
-  setSnackbar({ open: false, message: '', severity: '' });
-
-  setTimeout(() => {
-    setSnackbar({
-      open: true,
-      message: `${context} added!`,
-      severity: "success",
-    });
-  }, 300);
-
-  // Return true to indicate success
-  return true;
+      resolve(true);
+    }, 300);
+  });
 };
 
 /**
@@ -49,20 +50,34 @@ export const addItem = (setItems, newItem, setSnackbar, context) => {
  * @param {number} id - The index of the item to be deleted.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
+ * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
  */
-export const deleteItem = (setItems, id, setSnackbar, context) => {
-  setItems((prevItems) => prevItems.filter((_, index) => index !== id));
-
-  // Close the current Snackbar, then show the info message
-  setSnackbar({ open: false, message: '', severity: '' });
-
-  setTimeout(() => {
-    setSnackbar({
-      open: true,
-      message: `${context} deleted`,
-      severity: "error",
+export const deleteItem = async (setItems, id, setSnackbar, context) => {
+  await new Promise(resolve => {
+    setItems(prevItems => {
+      // Make sure we're using the correct index and validate it
+      if (id < 0 || id >= prevItems.length) {
+        resolve(prevItems);
+        return prevItems;
+      }
+      const newState = prevItems.filter((_, index) => index !== id);
+      resolve(newState);
+      return newState;
     });
-  }, 300); // Allow the old Snackbar to fully unmount
+  });
+
+  await setSnackbar({ open: false, message: '', severity: '' });
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      setSnackbar({
+        open: true,
+        message: `${context} deleted`,
+        severity: "error",
+      });
+      resolve();
+    }, 300);
+  });
 };
 
 /**
@@ -71,24 +86,31 @@ export const deleteItem = (setItems, id, setSnackbar, context) => {
  * @param {number} id - The index of the item to be checked.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
+ * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
  */
-export const checkItem = (setItems, id, setSnackbar, context) => {
-  setItems((prevItems) =>
-    prevItems.map((item, index) =>
-      index === id ? { ...item, checked: !item.checked, held: false } : item
-    )
-  );
-
-  // Close the current Snackbar, then show the success message
-  setSnackbar({ open: false, message: '', severity: '' });
-
-  setTimeout(() => {
-    setSnackbar({
-      open: true,
-      message: `${context} checked!`,
-      severity: "success",
+export const checkItem = async (setItems, id, setSnackbar, context) => {
+  await new Promise(resolve => {
+    setItems(prevItems => {
+      const newState = prevItems.map((item, index) =>
+        index === id ? { ...item, checked: !item.checked, held: false } : item
+      );
+      resolve(newState);
+      return newState;
     });
-  }, 300); // Allow the old Snackbar to fully unmount
+  });
+
+  await setSnackbar({ open: false, message: '', severity: '' });
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      setSnackbar({
+        open: true,
+        message: `${context} checked!`,
+        severity: "success",
+      });
+      resolve();
+    }, 300);
+  });
 };
 
 /**
@@ -97,24 +119,31 @@ export const checkItem = (setItems, id, setSnackbar, context) => {
  * @param {number} id - The index of the item to be held.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
+ * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
  */
-export const holdItem = (setItems, id, setSnackbar, context) => {
-  setItems((prevItems) =>
-    prevItems.map((item, index) =>
-      index === id ? { ...item, held: !item.held, checked: false } : item
-    )
-  );
-
-  // Close the current Snackbar, then show the warning message
-  setSnackbar({ open: false, message: '', severity: '' });
-
-  setTimeout(() => {
-    setSnackbar({
-      open: true,
-      message: `${context} held!`,
-      severity: "info",
+export const holdItem = async (setItems, id, setSnackbar, context) => {
+  await new Promise(resolve => {
+    setItems(prevItems => {
+      const newState = prevItems.map((item, index) =>
+        index === id ? { ...item, held: !item.held, checked: false } : item
+      );
+      resolve(newState);
+      return newState;
     });
-  }, 300); // Allow the old Snackbar to fully unmount
+  });
+
+  await setSnackbar({ open: false, message: '', severity: '' });
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      setSnackbar({
+        open: true,
+        message: `${context} held!`,
+        severity: "info",
+      });
+      resolve();
+    }, 300);
+  });
 };
 
 /**

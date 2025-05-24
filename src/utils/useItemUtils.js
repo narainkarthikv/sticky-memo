@@ -9,19 +9,24 @@ export const useItemUtils = (props) => {
   const [showButtons, setShowButtons] = useState(false);
   const { showNotification } = useNotification();
 
-  const handleDelete = () => {
-    ItemService.deleteItem(props.setItems, props.id);
-    showNotification(`${props.type} Deleted`, "error");
+  const handleDelete = async () => {
+    if (typeof props.id === 'number') {
+      await ItemService.deleteItem(props.setItems, props.id);
+      await showNotification(`${props.type} Deleted`, "error");
+    } else {
+      console.error('Invalid item ID for deletion');
+      await showNotification(`Failed to delete ${props.type}`, "error");
+    }
   };
 
-  const handleCheck = () => {
-    ItemService.updateItem(props.setItems, props.id, { checked: true, held: false });
-    showNotification(`${props.type} Checked`, "success");
+  const handleCheck = async () => {
+    await ItemService.updateItem(props.setItems, props.id, { checked: true, held: false });
+    await showNotification(`${props.type} Checked`, "success");
   };
 
-  const handleHold = () => {
-    ItemService.updateItem(props.setItems, props.id, { held: true, checked: false });
-    showNotification(`${props.type} Held`, "info");
+  const handleHold = async () => {
+    await ItemService.updateItem(props.setItems, props.id, { held: true, checked: false });
+    await showNotification(`${props.type} Held`, "info");
   };
 
   const handleEdit = () => {
@@ -30,10 +35,10 @@ export const useItemUtils = (props) => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    props.onSave(props.id, editedTitle, editedContent);
+  const handleSave = async () => {
+    await props.onSave(props.id, editedTitle, editedContent);
     setIsEditing(false);
-    showNotification(`${props.type} Saved Successfully`, "success");
+    await showNotification(`${props.type} Saved Successfully`, "success");
   };
 
   const toggleButtons = () => {
