@@ -16,8 +16,9 @@ import { useTheme } from '@mui/material/styles';
 const NoteCard = ({
   item,
   index,
+  id,
   isEditing,
-  editingIndex,
+  editingId,
   editedTitle,
   setEditedTitle,
   editedContent,
@@ -36,23 +37,23 @@ const NoteCard = ({
   items,
 }) => {
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const ariaDescribedById = open ? 'simple-popover' : undefined;
   const [dateHover, setDateHover] = useState(null);
   const theme = useTheme();
 
   // Calculate days remaining if due date exists
   const calculateDaysRemaining = () => {
     if (!item.dueDate) return null;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const dueDate = new Date(item.dueDate);
     dueDate.setHours(0, 0, 0, 0);
-    
+
     const differenceInTime = dueDate.getTime() - today.getTime();
     const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-    
+
     return differenceInDays;
   };
 
@@ -69,18 +70,18 @@ const NoteCard = ({
   // Handle date changes
   const handleStartDateChange = (e) => {
     const updatedItems = [...items];
-    updatedItems[index] = { 
-      ...updatedItems[index], 
-      startDate: e.target.value 
+    updatedItems[index] = {
+      ...updatedItems[index],
+      startDate: e.target.value
     };
     setItems(updatedItems);
   };
 
   const handleDueDateChange = (e) => {
     const updatedItems = [...items];
-    updatedItems[index] = { 
-      ...updatedItems[index], 
-      dueDate: e.target.value 
+    updatedItems[index] = {
+      ...updatedItems[index],
+      dueDate: e.target.value
     };
     setItems(updatedItems);
   };
@@ -97,7 +98,7 @@ const NoteCard = ({
       <CardContent sx={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Typography sx={typographyStyles}>
           <>
-            {isEditing && editingIndex === index ? (
+            {isEditing && editingId === id ? (
               <TextField size='small' onChange={(e) => setEditedTitle(e.target.value)} defaultValue={item.title} fullWidth />
             ) : (
               <span style={{ fontWeight: 'bolder' }}>{item.title}</span>
@@ -106,14 +107,14 @@ const NoteCard = ({
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton
               sx={buttonStyle}
-              aria-describedby={id}
-              onClick={(e) => handleClickPopover(e, index)}
+              aria-describedby={ariaDescribedById}
+              onClick={(e) => handleClickPopover(e, id)}
             >
               <MoreVertIcon fontSize="small" />
             </IconButton>
 
             <Popover
-              id={id}
+              id={ariaDescribedById}
               open={open}
               anchorEl={anchorEl}
               onClose={handleClosePopover}
@@ -135,7 +136,7 @@ const NoteCard = ({
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
-                    checkItem(setItems, index, setSnackbar, 'Note');
+                    checkItem(setItems, id, setSnackbar, 'Note');
                     handleClosePopover();
                   }}
                 >
@@ -144,7 +145,7 @@ const NoteCard = ({
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
-                    holdItem(setItems, index, setSnackbar, 'Note');
+                    holdItem(setItems, id, setSnackbar, 'Note');
                     handleClosePopover();
                   }}
                 >
@@ -153,7 +154,7 @@ const NoteCard = ({
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
-                    deleteItem(setItems, index, setSnackbar, 'Note');
+                    deleteItem(setItems, id, setSnackbar, 'Note');
                     handleClosePopover();
                   }}
                 >
@@ -165,7 +166,7 @@ const NoteCard = ({
         </Typography>
 
         <Box sx={{ flex: 1, p: 2 }}>
-          {isEditing && editingIndex === index ? (
+          {isEditing && editingId === id ? (
             <>
               <TextField
                 size='small'
@@ -187,13 +188,13 @@ const NoteCard = ({
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
-                      <CalendarTodayIcon 
-                        fontSize="small" 
-                        sx={{ mr: 1, color: theme.palette.primary.main }} 
+                      <CalendarTodayIcon
+                        fontSize="small"
+                        sx={{ mr: 1, color: theme.palette.primary.main }}
                       />
                     ),
                   }}
-                  sx={{ 
+                  sx={{
                     flex: 1,
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
@@ -218,13 +219,13 @@ const NoteCard = ({
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
-                      <EventIcon 
-                        fontSize="small" 
-                        sx={{ mr: 1, color: theme.palette.secondary.main }} 
+                      <EventIcon
+                        fontSize="small"
+                        sx={{ mr: 1, color: theme.palette.secondary.main }}
                       />
                     ),
                   }}
-                  sx={{ 
+                  sx={{
                     flex: 1,
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
@@ -242,7 +243,7 @@ const NoteCard = ({
               </Box>
               <IconButton
                 sx={{ ...buttonStyle, mt: 1 }}
-                onClick={() => handleSave(item, index, editedTitle, editedContent)}
+                onClick={() => handleSave(item, id, editedTitle, editedContent)}
               >
                 <SaveIcon fontSize="small" />
               </IconButton>
@@ -254,12 +255,12 @@ const NoteCard = ({
                 {item.startDate && (
                   <Tooltip title="Start Date" TransitionComponent={Fade}>
                     <Box sx={dateFieldStyles}>
-                      <CalendarTodayIcon 
-                        fontSize="small" 
-                        sx={{ 
+                      <CalendarTodayIcon
+                        fontSize="small"
+                        sx={{
                           mr: 0.5,
                           color: theme.palette.primary.main
-                        }} 
+                        }}
                       />
                       <Typography sx={dateValueStyles}>
                         {new Date(item.startDate).toLocaleDateString()}
@@ -270,12 +271,12 @@ const NoteCard = ({
                 {item.dueDate && (
                   <Tooltip title="Due Date" TransitionComponent={Fade}>
                     <Box sx={dateFieldStyles}>
-                      <EventIcon 
-                        fontSize="small" 
-                        sx={{ 
+                      <EventIcon
+                        fontSize="small"
+                        sx={{
                           mr: 0.5,
                           color: theme.palette.secondary.main
-                        }} 
+                        }}
                       />
                       <Typography sx={dateValueStyles}>
                         {new Date(item.dueDate).toLocaleDateString()}
@@ -287,26 +288,26 @@ const NoteCard = ({
                   <Chip
                     size="small"
                     icon={
-                      <AccessTimeIcon 
-                        sx={{ 
-                          color: daysRemaining < 0 ? 
-                            theme.palette.error.main : 
-                            daysRemaining <= 2 ? 
-                              theme.palette.warning.main : 
-                              theme.palette.success.main 
-                        }} 
+                      <AccessTimeIcon
+                        sx={{
+                          color: daysRemaining < 0 ?
+                            theme.palette.error.main :
+                            daysRemaining <= 2 ?
+                              theme.palette.warning.main :
+                              theme.palette.success.main
+                        }}
                       />
                     }
                     label={`${daysRemaining} days ${daysRemaining < 0 ? 'overdue' : 'remaining'}`}
                     color={getDueDateChipColor()}
-                    sx={{ 
+                    sx={{
                       ml: 1,
                       fontWeight: 500,
                       border: '1px solid',
-                      borderColor: daysRemaining < 0 ? 
-                        theme.palette.error.main : 
-                        daysRemaining <= 2 ? 
-                          theme.palette.warning.main : 
+                      borderColor: daysRemaining < 0 ?
+                        theme.palette.error.main :
+                        daysRemaining <= 2 ?
+                          theme.palette.warning.main :
                           theme.palette.success.main
                     }}
                   />

@@ -10,13 +10,14 @@ import { useItemUtils } from '../utils/useItemUtils';
 import { tableListStyles, tableStyles, tableHeadStyles, tableCellStyles, boxStyles, scrollBoxStyles } from '../styles/tableListStyles';
 import AddButton from '../components/common/AddButton';
 import { debounce } from '../utils/debounce';
+import { v4 as uuidv4 } from 'uuid';
 
 const TableList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
   const [snackbar, setSnackbar] = useRecoilState(snackbarState);
   const [filter, setFilter] = useState('');
   const [draggingIndex, setDraggingIndex] = useState(null);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
   const dragTimeoutRef = useRef(null);
@@ -70,20 +71,20 @@ const TableList = (props) => {
 
   const handleSave = useCallback((item, id, newTitle, newContent) => {
     setIsEditing(false);
-    const updatedItems = items.map((item, index) =>
-      index === id ? { 
-        ...item, 
-        title: newTitle || item.title, 
+    const updatedItems = items.map((item) =>
+      item.id === id ? {
+        ...item,
+        title: newTitle || item.title,
         content: newContent || item.content,
         startDate: item.startDate,
-        dueDate: item.dueDate 
+        dueDate: item.dueDate
       } : item
     );
     startTransition(() => setItems(updatedItems));
   }, [items, setItems, setIsEditing]);
 
-  const handleClickPopover = useCallback((event, index) => {
-    setEditingIndex(index);
+  const handleClickPopover = useCallback((event, id) => {
+    setEditingId(id);
     setAnchorEl(event.currentTarget);
   }, []);
 
@@ -92,13 +93,14 @@ const TableList = (props) => {
   }, []);
 
   const addRow = useCallback(() => {
-    const newRow = { 
+    const newRow = {
       title: 'New Row',
       content: '',
       startDate: null,
       dueDate: null,
       checked: false,
-      held: false
+      held: false,
+      id: uuidv4()
     };
     startTransition(() => setItems(prev => [...prev, newRow]));
   }, [setItems]);
@@ -116,18 +118,19 @@ const TableList = (props) => {
               <TableRow>
                 <TableCell align='center' sx={tableCellStyles}>Title</TableCell>
                 <TableCell align='center' sx={tableCellStyles}>Content</TableCell>
-                <TableCell align='center' sx={{...tableCellStyles, minWidth: '200px'}}>Start Date</TableCell>
-                <TableCell align='center' sx={{...tableCellStyles, minWidth: '250px'}}>Due Date</TableCell>
+                <TableCell align='center' sx={{ ...tableCellStyles, minWidth: '200px' }}>Start Date</TableCell>
+                <TableCell align='center' sx={{ ...tableCellStyles, minWidth: '250px' }}>Due Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredItems.map((item, index) => (
                 <TableCard
-                  key={index}
+                  key={item.id}
                   item={item}
                   index={index}
+                  id={item.id}
                   isEditing={isEditing}
-                  editingIndex={editingIndex}
+                  editingId={editingId}
                   editedTitle={editedTitle}
                   setEditedTitle={setEditedTitle}
                   editedContent={editedContent}

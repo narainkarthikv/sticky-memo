@@ -15,8 +15,9 @@ import { tableRowStyles, buttonStyle, boxStyles, contentBoxStyles, popoverTypogr
 const TableCard = ({
   item,
   index,
+  id,
   isEditing,
-  editingIndex,
+  editingId,
   editedTitle,
   setEditedTitle,
   editedContent,
@@ -35,22 +36,22 @@ const TableCard = ({
   items,
 }) => {
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const ariaDescribedById = open ? 'simple-popover' : undefined;
   const [dateHover, setDateHover] = useState(null);
 
   // Calculate days remaining if due date exists
   const calculateDaysRemaining = () => {
     if (!item.dueDate) return null;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const dueDate = new Date(item.dueDate);
     dueDate.setHours(0, 0, 0, 0);
-    
+
     const differenceInTime = dueDate.getTime() - today.getTime();
     const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-    
+
     return differenceInDays;
   };
 
@@ -67,55 +68,55 @@ const TableCard = ({
   // Handle date changes
   const handleStartDateChange = (e) => {
     const updatedItems = [...items];
-    updatedItems[index] = { 
-      ...updatedItems[index], 
-      startDate: e.target.value 
+    updatedItems[index] = {
+      ...updatedItems[index],
+      startDate: e.target.value
     };
     setItems(updatedItems);
   };
 
   const handleDueDateChange = (e) => {
     const updatedItems = [...items];
-    updatedItems[index] = { 
-      ...updatedItems[index], 
-      dueDate: e.target.value 
+    updatedItems[index] = {
+      ...updatedItems[index],
+      dueDate: e.target.value
     };
     setItems(updatedItems);
   };
 
   return (
     <TableRow
-      key={index}
-      id={index}
+      key={id}
+      id={id}
       draggable
       onDragStart={(e) => handleDragStart(index)}
       onDrop={(e) => handleDrop(index, e)}
       onDragOver={(e) => handleDragOver(e)}
       sx={tableRowStyles(item)} // Apply the styles
     >
-    <TableCell align="center" sx={{ color: 'inherit' }}>
-    {isEditing && editingIndex === index ? (
+      <TableCell align="center" sx={{ color: 'inherit' }}>
+        {isEditing && editingId === id ? (
           <TextField onChange={(e) => setEditedTitle(e.target.value)} defaultValue={item.title} fullWidth />
         ) : (
           <span>{item.title}</span>
         )}
       </TableCell>
       <TableCell align="center" sx={{ color: 'inherit' }}>
-      <Box sx={boxStyles}>
+        <Box sx={boxStyles}>
           <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ flex: { xs: '1 1 50%', sm: '1 1 66%' } }}>
-              {isEditing && editingIndex === index ? (
+              {isEditing && editingId === id ? (
                 <TextField onChange={(e) => setEditedContent(e.target.value)} defaultValue={item.content} fullWidth multiline rows={4} />
               ) : (
                 <span>{item.content}</span>
               )}
             </Box>
             <Box sx={{ flex: { xs: '1 1 50%', sm: '1 1 33%' }, display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton aria-describedby={id} variant="contained" onClick={(e) => handleClickPopover(e, index)}>
+              <IconButton aria-describedby={ariaDescribedById} variant="contained" onClick={(e) => handleClickPopover(e, id)}>
                 <MoreVertIcon sx={buttonStyle} fontSize="small" />
               </IconButton>
               <Popover
-                id={id}
+                id={ariaDescribedById}
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handleClosePopover}
@@ -125,7 +126,7 @@ const TableCard = ({
                   <IconButton
                     onClick={() => {
                       if (isEditing) {
-                        handleSave(item, editingIndex, editedTitle, editedContent);
+                        handleSave(item, editingId, editedTitle, editedContent);
                       } else {
                         handleEdit();
                       }
@@ -138,13 +139,15 @@ const TableCard = ({
                       <EditIcon fontSize="small" sx={buttonStyle} />
                     )}
                   </IconButton>
-                  <IconButton onClick={() => holdItem(setItems, editingIndex, setSnackbar, 'Row')} variant="contained">
+                  <IconButton onClick={() => holdItem(setItems, editingId, setSnackbar, 'Row')} variant="contained">
                     <BackHandIcon fontSize="small" sx={buttonStyle} />
                   </IconButton>
-                  <IconButton onClick={() => checkItem(setItems, editingIndex, setSnackbar, 'Row')} variant="contained">
+                  <IconButton onClick={() => checkItem(setItems, editingId, setSnackbar, 'Row')} variant="contained">
                     <CheckCircleIcon fontSize="small" sx={buttonStyle} />
                   </IconButton>
-                  <IconButton onClick={() => deleteItem(setItems, editingIndex, setSnackbar, 'Row')} variant="contained">
+                  <IconButton onClick={() => {
+                    deleteItem(setItems, editingId, setSnackbar, 'Row')
+                  }} variant="contained">
                     <DeleteIcon fontSize="small" sx={buttonStyle} />
                   </IconButton>
                 </Typography>
@@ -155,22 +158,22 @@ const TableCard = ({
       </TableCell>
       {/* Start Date Cell */}
       <TableCell align='center'>
-        <Box 
+        <Box
           sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}
           onMouseEnter={() => setDateHover('start')}
           onMouseLeave={() => setDateHover(null)}
         >
           <Tooltip title="Start Date" arrow>
-            <CalendarTodayIcon 
-              fontSize="small" 
-              color="primary" 
-              sx={{ 
+            <CalendarTodayIcon
+              fontSize="small"
+              color="primary"
+              sx={{
                 transition: 'transform 0.2s ease',
                 transform: dateHover === 'start' ? 'scale(1.2)' : 'scale(1)'
-              }} 
+              }}
             />
           </Tooltip>
-          {isEditing && editingIndex === index ? (
+          {isEditing && editingId === id ? (
             <TextField
               size='small'
               type="date"
@@ -180,7 +183,7 @@ const TableCard = ({
               sx={{ minWidth: '200px' }}
             />
           ) : item.startDate ? (
-            <Chip 
+            <Chip
               label={`${new Date(item.startDate).toLocaleDateString()}`}
               color="primary"
               variant="outlined"
@@ -196,22 +199,22 @@ const TableCard = ({
       </TableCell>
       {/* Due Date Cell */}
       <TableCell align='center'>
-        <Box 
+        <Box
           sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}
           onMouseEnter={() => setDateHover('due')}
           onMouseLeave={() => setDateHover(null)}
         >
           <Tooltip title="Due Date" arrow>
-            <EventIcon 
-              fontSize="small" 
-              color="error" 
-              sx={{ 
+            <EventIcon
+              fontSize="small"
+              color="error"
+              sx={{
                 transition: 'transform 0.2s ease',
                 transform: dateHover === 'due' ? 'scale(1.2)' : 'scale(1)'
-              }} 
+              }}
             />
           </Tooltip>
-          {isEditing && editingIndex === index ? (
+          {isEditing && editingId === id ? (
             <TextField
               size='small'
               type="date"
@@ -222,7 +225,7 @@ const TableCard = ({
             />
           ) : item.dueDate ? (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Chip 
+              <Chip
                 label={`${new Date(item.dueDate).toLocaleDateString()}`}
                 color={getDueDateChipColor()}
                 variant="outlined"
@@ -234,11 +237,11 @@ const TableCard = ({
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <AccessTimeIcon fontSize="small" color={daysRemaining < 0 ? "error" : "action"} />
                     <Typography variant="caption" sx={{ ml: 0.5, color: daysRemaining < 0 ? 'error.main' : 'text.secondary' }}>
-                      {daysRemaining === 0 ? "Today" : 
-                       daysRemaining === 1 ? "Tomorrow" : 
-                       daysRemaining === -1 ? "Yesterday" :
-                       daysRemaining > 0 ? `${daysRemaining}d` : 
-                       `${Math.abs(daysRemaining)}d ago`}
+                      {daysRemaining === 0 ? "Today" :
+                        daysRemaining === 1 ? "Tomorrow" :
+                          daysRemaining === -1 ? "Yesterday" :
+                            daysRemaining > 0 ? `${daysRemaining}d` :
+                              `${Math.abs(daysRemaining)}d ago`}
                     </Typography>
                   </Box>
                 </Tooltip>
