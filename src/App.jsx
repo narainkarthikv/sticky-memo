@@ -10,11 +10,15 @@ import RoadmapView from "./pages/RoadmapView";
 import { Box } from "@mui/material";
 import { ItemProvider } from './context/ItemContext';
 
+// 🔔 NOTICE for all developers:
+// All dynamic items **must** use a UUID (item.id) for identification.
+// ❌ Never use array indices for logic, state updates, or as React keys.
+// This prevents bugs with reordering, drag-and-drop, and dynamic rendering.
 function App() {
   return (
     <ItemProvider>
       <Router>
-        <Box sx={{ 
+        <Box sx={{
           textAlign: 'center',
           display: 'flex',
           flexDirection: 'column',
@@ -22,8 +26,8 @@ function App() {
           bgcolor: 'background.default',
           color: 'text.primary',
         }}>
-          <Box sx={{ 
-            display: 'flex', 
+          <Box sx={{
+            display: 'flex',
             flexGrow: 1,
             bgcolor: 'background.default',
             color: 'text.primary',
