@@ -10,13 +10,14 @@ import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
 import AddButton from '../components/common/AddButton';
 import { debounce } from '../utils/debounce';
+import { v4 as uuidv4 } from 'uuid';
 
 const NoteList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
   const [snackbar, setSnackbar] = useRecoilState(snackbarState);
   const [filter, setFilter] = useState('');
   const [draggingIndex, setDraggingIndex] = useState(null);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
   const dragTimeoutRef = useRef(null);
@@ -70,20 +71,20 @@ const NoteList = (props) => {
 
   const handleSave = useCallback((item, id, newTitle, newContent) => {
     setIsEditing(false);
-    const updatedItems = items.map((item, index) =>
-      index === id ? { 
-        ...item, 
-        title: newTitle || item.title, 
+    const updatedItems = items.map((item) =>
+      item.id === id ? {
+        ...item,
+        title: newTitle || item.title,
         content: newContent || item.content,
         startDate: item.startDate,
-        dueDate: item.dueDate 
+        dueDate: item.dueDate
       } : item
     );
     startTransition(() => setItems(updatedItems));
   }, [items, setItems, setIsEditing]);
 
-  const handleClickPopover = useCallback((event, index) => {
-    setEditingIndex(index);
+  const handleClickPopover = useCallback((event, id) => {
+    setEditingId(id);
     setAnchorEl(event.currentTarget);
   }, []);
 
@@ -92,13 +93,14 @@ const NoteList = (props) => {
   }, []);
 
   const addNote = useCallback(() => {
-    const newNote = { 
+    const newNote = {
       title: 'New Note',
       content: '',
       startDate: null,
       dueDate: null,
       checked: false,
-      held: false
+      held: false,
+      id: uuidv4()
     };
     startTransition(() => setItems(prev => [...prev, newNote]));
   }, [setItems]);
@@ -114,13 +116,14 @@ const NoteList = (props) => {
 
       <Grid container spacing={2} sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
             <NoteCard
-              key={index}
+              key={item.id}
               item={item}
               index={index}
+              id={item.id}
               isEditing={isEditing}
-              editingIndex={editingIndex}
+              editingId={editingId}
               editedTitle={editedTitle}
               setEditedTitle={setEditedTitle}
               editedContent={editedContent}

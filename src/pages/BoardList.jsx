@@ -9,13 +9,14 @@ import { addItem, filterItems } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { boardListStyles, scrollBoxStyles } from '../styles/boardListStyles';
 import AddButton from '../components/common/AddButton';
+import { v4 as uuidv4 } from 'uuid';
 
 const BoardList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
   const [snackbar, setSnackbar] = useRecoilState(snackbarState);
   const [filter, setFilter] = useState('');
   const [draggingIndex, setDraggingIndex] = useState(null);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
 
@@ -52,13 +53,13 @@ const BoardList = (props) => {
 
   const handleSave = (item, id, newTitle, newContent) => {
     setIsEditing(false);
-    const updatedItems = items.map((item, index) =>
-      index === id ? { 
-        ...item, 
-        title: newTitle || item.title, 
+    const updatedItems = items.map((item) =>
+      item.id === id ? {
+        ...item,
+        title: newTitle || item.title,
         content: newContent || item.content,
         startDate: item.startDate,
-        dueDate: item.dueDate 
+        dueDate: item.dueDate
       } : item
     );
     startTransition(() => setItems(updatedItems));
@@ -66,20 +67,21 @@ const BoardList = (props) => {
 
   const filteredItems = filterItems(items, filter);
 
-  const handleClickPopover = (event, index) => {
-    setEditingIndex(index);
+  const handleClickPopover = (event, id) => {
+    setEditingId(id);
     setAnchorEl(event.currentTarget);
   };
   const handleClosePopover = () => setAnchorEl(null);
 
   const addBoard = () => {
-    const newBoard = { 
+    const newBoard = {
       title: 'New Board',
       content: '',
       startDate: null,
       dueDate: null,
       checked: false,
-      held: false
+      held: false,
+      id: uuidv4()
     };
     setItems([...items, newBoard]);
   };
@@ -90,13 +92,14 @@ const BoardList = (props) => {
       <CommonFilter filter={filter} setFilter={setFilter} />
       <Grid container spacing={2} sx={scrollBoxStyles}>
         {filteredItems.map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
             <BoardCard
-              key={index}
+              key={item.id}
               item={item}
               index={index}
+              id={item.id}
               isEditing={isEditing}
-              editingIndex={editingIndex}
+              editingId={editingId}
               editedTitle={editedTitle}
               setEditedTitle={setEditedTitle}
               editedContent={editedContent}

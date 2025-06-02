@@ -47,7 +47,7 @@ export const addItem = async (setItems, newItem, setSnackbar, context) => {
 /**
  * Deletes an item from the list.
  * @param {Function} setItems - Function to update the items state.
- * @param {number} id - The index of the item to be deleted.
+ * @param {number} id - The unique id of the item to be deleted.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
  * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
@@ -55,12 +55,13 @@ export const addItem = async (setItems, newItem, setSnackbar, context) => {
 export const deleteItem = async (setItems, id, setSnackbar, context) => {
   await new Promise(resolve => {
     setItems(prevItems => {
+      const currentIndex = prevItems.findIndex((item) => item.id === id);
       // Make sure we're using the correct index and validate it
-      if (id < 0 || id >= prevItems.length) {
+      if (currentIndex === -1) {
         resolve(prevItems);
         return prevItems;
       }
-      const newState = prevItems.filter((_, index) => index !== id);
+      const newState = prevItems.filter((_, index) => index !== currentIndex);
       resolve(newState);
       return newState;
     });
@@ -83,7 +84,7 @@ export const deleteItem = async (setItems, id, setSnackbar, context) => {
 /**
  * Toggles the checked state of an item.
  * @param {Function} setItems - Function to update the items state.
- * @param {number} id - The index of the item to be checked.
+ * @param {number} id - The unique id of the item to be checked.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
  * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
@@ -91,8 +92,8 @@ export const deleteItem = async (setItems, id, setSnackbar, context) => {
 export const checkItem = async (setItems, id, setSnackbar, context) => {
   await new Promise(resolve => {
     setItems(prevItems => {
-      const newState = prevItems.map((item, index) =>
-        index === id ? { ...item, checked: !item.checked, held: false } : item
+      const newState = prevItems.map((item) =>
+        item.id === id ? { ...item, checked: !item.checked, held: false } : item
       );
       resolve(newState);
       return newState;
@@ -116,7 +117,7 @@ export const checkItem = async (setItems, id, setSnackbar, context) => {
 /**
  * Toggles the held state of an item.
  * @param {Function} setItems - Function to update the items state.
- * @param {number} id - The index of the item to be held.
+ * @param {number} id - The unique id of the item to be held.
  * @param {Function} setSnackbar - Function to update the snackbar state.
  * @param {string} context - Context of the item (e.g., "Note").
  * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
@@ -124,8 +125,8 @@ export const checkItem = async (setItems, id, setSnackbar, context) => {
 export const holdItem = async (setItems, id, setSnackbar, context) => {
   await new Promise(resolve => {
     setItems(prevItems => {
-      const newState = prevItems.map((item, index) =>
-        index === id ? { ...item, held: !item.held, checked: false } : item
+      const newState = prevItems.map((item) =>
+        item.id === id ? { ...item, held: !item.held, checked: false } : item
       );
       resolve(newState);
       return newState;
