@@ -159,4 +159,17 @@ export const filterItems = (items, filter) => {
       item.title.toLowerCase().includes(filter.toLowerCase()) ||
       item.content.toLowerCase().includes(filter.toLowerCase())
   );
+
+
 };
+
+/**
+ * Sorting items based on checkout
+ * @param items the list of items to be sorted
+ * @returns {*} sorted array
+ */
+export const sortItemsByChecked = (items) => {
+  return items.filter((item) =>
+    item.checked === true
+  )
+}

@@ -4,8 +4,8 @@ import { itemsState, snackbarState } from '../utils/state';
 import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
-import { Box, Grid } from '@mui/material';
-import { filterItems } from '../utils/helper';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { filterItems, sortItemsByChecked } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
 import AddButton from '../components/common/AddButton';
@@ -21,6 +21,8 @@ const NoteList = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
   const dragTimeoutRef = useRef(null);
+  const [sort, setSort] = useState("");
+  const [displayItems, setDisplayItems] = useState([...items]);
 
   const {
     isEditing,
@@ -105,17 +107,59 @@ const NoteList = (props) => {
     startTransition(() => setItems(prev => [...prev, newNote]));
   }, [setItems]);
 
-  const filteredItems = filterItems(items, filter);
+  // const filteredItems = filterItems(items, filter);
+
+  const onSort = async(event) => {
+    await setSort(event.target.value);
+  }
+
+
+
+  useEffect(() => {
+    let updated = [...items];
+
+    // Apply filter first, then sort — or reverse if needed
+    updated = filterItems(updated, filter);
+    if(sort === SORT.Check){
+      updated = sortItemsByChecked(updated)
+    }
+
+    setDisplayItems(updated);
+    console.log('Updated Display Items:', updated);
+  }, [items, sort, filter]);
+
+  const SORT = Object.freeze({
+    Title: "title",
+    Check: "checked",
+    Hold: "hold"
+  })
 
   return (
     <Box sx={noteListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box>
         <CommonFilter filter={filter} setFilter={setFilter} />
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-standard-label">Sort by</InputLabel>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={sort}
+            onChange={onSort}
+            placeholder="Sort by..."
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={SORT.Title}>Title</MenuItem>
+            <MenuItem value={SORT.Check}>Checked</MenuItem>
+            <MenuItem value={SORT.Hold}>Hold</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
-
       <Grid container spacing={2} sx={scrollBoxStyles}>
-        {filteredItems.map((item, index) => (
+        {displayItems.map((item, index) => (
+
           <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
             <NoteCard
               key={item.id}
