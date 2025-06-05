@@ -5,7 +5,7 @@ import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
-import { filterItems, sortItemsByChecked } from '../utils/helper';
+import { filterItems, sortItemsByChecked, sortItemsByHold } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
 import AddButton from '../components/common/AddButton';
@@ -120,18 +120,21 @@ const NoteList = (props) => {
 
     // Apply filter first, then sort — or reverse if needed
     updated = filterItems(updated, filter);
-    if(sort === SORT.Check){
-      updated = sortItemsByChecked(updated)
+    if(sort === SORT.Check || sort === SORT.UnCheck){
+      updated = sortItemsByChecked(updated, sort)
+    }else if(sort === SORT.Hold || sort === SORT.UnHold){
+      updated = sortItemsByHold(updated, sort)
     }
 
     setDisplayItems(updated);
-    console.log('Updated Display Items:', updated);
   }, [items, sort, filter]);
 
   const SORT = Object.freeze({
     Title: "title",
     Check: "checked",
-    Hold: "hold"
+    UnCheck: "unchecked",
+    Hold: "hold",
+    UnHold: "unhold"
   })
 
   return (
@@ -151,9 +154,11 @@ const NoteList = (props) => {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value={SORT.Title}>Title</MenuItem>
-            <MenuItem value={SORT.Check}>Checked</MenuItem>
-            <MenuItem value={SORT.Hold}>Hold</MenuItem>
+            <MenuItem value={SORT.Title}>Title⬆️</MenuItem>
+            <MenuItem value={SORT.Check}>✅ Checked</MenuItem>
+            <MenuItem value={SORT.UnCheck}>❎ Unchecked</MenuItem>
+            <MenuItem value={SORT.Hold}>🛑 Hold</MenuItem>
+            <MenuItem value={SORT.UnHold}>🟢 Unhold</MenuItem>
           </Select>
         </FormControl>
       </Box>

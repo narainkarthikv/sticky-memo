@@ -166,10 +166,18 @@ export const filterItems = (items, filter) => {
 /**
  * Sorting items based on checkout
  * @param items the list of items to be sorted
+ * @param check type of sort checked or unchecked
  * @returns {*} sorted array
  */
-export const sortItemsByChecked = (items) => {
+export const sortItemsByChecked = (items, check) => {
   return items.filter((item) =>
-    item.checked === true
+  check === "checked"? item.checked === true : item.checked === false
+  )
+}
+
+
+export const sortItemsByHold = (items, hold) => {
+  return items.filter((item) =>
+    hold === "hold"? item.held === true : item.held === false
   )
 }
