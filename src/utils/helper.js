@@ -181,3 +181,12 @@ export const sortItemsByHold = (items, hold) => {
     hold === "hold"? item.held === true : item.held === false
   )
 }
+
+
+  export const sortItemsByApha = (items, order) => {
+    const sorted = [...items].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+    );
+
+    return order === "titleup" ? sorted.reverse() : sorted;
+  }

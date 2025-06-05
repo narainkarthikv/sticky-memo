@@ -5,7 +5,7 @@ import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
-import { filterItems, sortItemsByChecked, sortItemsByHold } from '../utils/helper';
+import { filterItems, sortItemsByApha, sortItemsByChecked, sortItemsByHold } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
 import AddButton from '../components/common/AddButton';
@@ -124,13 +124,16 @@ const NoteList = (props) => {
       updated = sortItemsByChecked(updated, sort)
     }else if(sort === SORT.Hold || sort === SORT.UnHold){
       updated = sortItemsByHold(updated, sort)
+    }else if(sort === SORT.TitleUp || sort === SORT.TitleDown){
+      updated = sortItemsByApha(items, sort)
     }
 
     setDisplayItems(updated);
   }, [items, sort, filter]);
 
   const SORT = Object.freeze({
-    Title: "title",
+    TitleUp: "titleup",
+    TitleDown: "titledown",
     Check: "checked",
     UnCheck: "unchecked",
     Hold: "hold",
@@ -154,7 +157,8 @@ const NoteList = (props) => {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value={SORT.Title}>Title⬆️</MenuItem>
+            <MenuItem value={SORT.TitleDown}>⬇️ Abc</MenuItem>
+            <MenuItem value={SORT.TitleUp}>⬆️ Abc</MenuItem>
             <MenuItem value={SORT.Check}>✅ Checked</MenuItem>
             <MenuItem value={SORT.UnCheck}>❎ Unchecked</MenuItem>
             <MenuItem value={SORT.Hold}>🛑 Hold</MenuItem>
