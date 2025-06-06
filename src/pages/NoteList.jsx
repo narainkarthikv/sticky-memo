@@ -1,10 +1,10 @@
-import React, { useState, useTransition, useEffect, useCallback, useRef } from 'react';
+import { useState, useTransition, useEffect, useCallback, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
 import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, FormControl, Grid, InputLabel } from '@mui/material';
 import { filterItems, sortItemsByApha, sortItemsByChecked, sortItemsByHold } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
