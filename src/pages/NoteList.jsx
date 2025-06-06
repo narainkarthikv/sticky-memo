@@ -1,16 +1,17 @@
-import React, { useState, useTransition, useEffect, useCallback, useRef } from 'react';
+import { useState, useTransition, useEffect, useCallback, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
 import NoteCard from '../components/Note/NoteCard';
 import CommonFilter from '../components/common/CommonFilter';
 import CommonSnackbar from '../components/common/CommonSnackbar';
-import { Box, Grid } from '@mui/material';
-import { filterItems } from '../utils/helper';
+import { Box, FormControl, Grid, InputLabel } from '@mui/material';
+import { filterItems, sortItemsByApha, sortItemsByChecked, sortItemsByHold } from '../utils/helper';
 import { useItemUtils } from '../utils/useItemUtils';
 import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
 import AddButton from '../components/common/AddButton';
 import { debounce } from '../utils/debounce';
 import { v4 as uuidv4 } from 'uuid';
+import NoteSorter from '../components/Note/NoteSorter.jsx';
 
 const NoteList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -21,6 +22,8 @@ const NoteList = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPending, startTransition] = useTransition();
   const dragTimeoutRef = useRef(null);
+  const [sort, setSort] = useState("");
+  const [displayItems, setDisplayItems] = useState([...items]);
 
   const {
     isEditing,
@@ -105,17 +108,53 @@ const NoteList = (props) => {
     startTransition(() => setItems(prev => [...prev, newNote]));
   }, [setItems]);
 
-  const filteredItems = filterItems(items, filter);
+  // const filteredItems = filterItems(items, filter);
+
+  const onSort = async(event) => {
+    await setSort(event.target.value);
+  }
+
+
+
+  useEffect(() => {
+    let updated = [...items];
+
+    // Apply filter first, then sort — or reverse if needed
+    updated = filterItems(updated, filter);
+    if(sort === SORT.Check || sort === SORT.UnCheck){
+      updated = sortItemsByChecked(updated, sort)
+    }else if(sort === SORT.Hold || sort === SORT.UnHold){
+      updated = sortItemsByHold(updated, sort)
+    }else if(sort === SORT.TitleUp || sort === SORT.TitleDown){
+      updated = sortItemsByApha(updated, sort)
+    }
+
+    setDisplayItems(updated);
+  }, [items, sort, filter]);
+
+  const SORT = Object.freeze({
+    TitleUp: "titleup",
+    TitleDown: "titledown",
+    Check: "checked",
+    UnCheck: "unchecked",
+    Hold: "hold",
+    UnHold: "unhold"
+  })
+
 
   return (
     <Box sx={noteListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <Box>
         <CommonFilter filter={filter} setFilter={setFilter} />
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-standard-label">Sort by</InputLabel>
+          <NoteSorter onSort={onSort} SORT={SORT} sort={sort} />
+        </FormControl>
       </Box>
-
       <Grid container spacing={2} sx={scrollBoxStyles}>
-        {filteredItems.map((item, index) => (
+        {displayItems.map((item, index) => (
+
           <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
             <NoteCard
               key={item.id}

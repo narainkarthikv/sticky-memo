@@ -159,4 +159,44 @@ export const filterItems = (items, filter) => {
       item.title.toLowerCase().includes(filter.toLowerCase()) ||
       item.content.toLowerCase().includes(filter.toLowerCase())
   );
+
+
 };
+
+/**
+ * Sorting items based on checkout
+ * @param items the list of items to be sorted
+ * @param check type of sort checked or unchecked
+ * @returns {*} sorted array
+ */
+export const sortItemsByChecked = (items, check) => {
+  return items.filter((item) =>
+  check === "checked"? item.checked === true : item.checked === false
+  )
+}
+
+/**
+ * Sort items according to the hold status
+ * @param items items to be sorted
+ * @param hold which status is required
+ * @returns {*} sorted items
+ */
+export const sortItemsByHold = (items, hold) => {
+  return items.filter((item) =>
+    hold === "hold"? item.held === true : item.held === false
+  )
+}
+
+/**
+ * sorting items in the alphabetical order
+ * @param items items to be sorted
+ * @param order required order a->z or z->a
+ * @returns {*} sorted items
+ */
+  export const sortItemsByApha = (items, order) => {
+    const sorted = [...items].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+    );
+
+    return order === "titleup" ? sorted.reverse() : sorted;
+  }
