@@ -11,6 +11,7 @@ import { noteListStyles, scrollBoxStyles } from '../styles/noteListStyles';
 import AddButton from '../components/common/AddButton';
 import { debounce } from '../utils/debounce';
 import { v4 as uuidv4 } from 'uuid';
+import NoteSorter from '../components/Note/NoteSorter.jsx';
 
 const NoteList = (props) => {
   const [items, setItems] = useRecoilState(itemsState);
@@ -125,7 +126,7 @@ const NoteList = (props) => {
     }else if(sort === SORT.Hold || sort === SORT.UnHold){
       updated = sortItemsByHold(updated, sort)
     }else if(sort === SORT.TitleUp || sort === SORT.TitleDown){
-      updated = sortItemsByApha(items, sort)
+      updated = sortItemsByApha(updated, sort)
     }
 
     setDisplayItems(updated);
@@ -140,6 +141,7 @@ const NoteList = (props) => {
     UnHold: "unhold"
   })
 
+
   return (
     <Box sx={noteListStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
@@ -147,23 +149,7 @@ const NoteList = (props) => {
         <CommonFilter filter={filter} setFilter={setFilter} />
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-standard-label">Sort by</InputLabel>
-          <Select
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            value={sort}
-            onChange={onSort}
-            placeholder="Sort by..."
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={SORT.TitleDown}>⬇️ Abc</MenuItem>
-            <MenuItem value={SORT.TitleUp}>⬆️ Abc</MenuItem>
-            <MenuItem value={SORT.Check}>✅ Checked</MenuItem>
-            <MenuItem value={SORT.UnCheck}>❎ Unchecked</MenuItem>
-            <MenuItem value={SORT.Hold}>🛑 Hold</MenuItem>
-            <MenuItem value={SORT.UnHold}>🟢 Unhold</MenuItem>
-          </Select>
+          <NoteSorter onSort={onSort} SORT={SORT} sort={sort} />
         </FormControl>
       </Box>
       <Grid container spacing={2} sx={scrollBoxStyles}>
