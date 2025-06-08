@@ -17,9 +17,23 @@ export const tableRowStyles = (item) => ({
 
 export const buttonStyle = {
   color: theme.palette.primary.contrastText,
-  borderRadius: '100%',
+  borderRadius: '50%',
   backgroundColor: theme.palette.secondary.main,
-  padding: '3px',
+  padding: theme.spacing(0.5),
+  minWidth: { xs: 40, sm: 44 }, // Touch-friendly minimum size
+  minHeight: { xs: 40, sm: 44 },
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.dark,
+    transform: 'scale(1.05)',
+  },
+  transition: 'all 0.2s ease-in-out',
+  // Touch device optimizations
+  '@media (hover: none)': {
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+      transform: 'none',
+    },
+  },
 };
 
 export const boxStyles = {

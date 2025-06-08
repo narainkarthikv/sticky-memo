@@ -10,21 +10,24 @@ export const addItem = async (setItems, newItem, setSnackbar, context) => {
   if (!newItem.title.trim() || !newItem.content.trim()) {
     await setSnackbar({ open: false, message: '', severity: '' });
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         setSnackbar({
           open: true,
           message: `Don't Waste ${context}s :)`,
-          severity: "warning",
+          severity: 'warning',
         });
         resolve(false);
       }, 300);
     });
   }
 
-  await new Promise(resolve => {
-    setItems(prevItems => {
-      const newState = [...prevItems, { ...newItem, checked: false, held: false, all: true }];
+  await new Promise((resolve) => {
+    setItems((prevItems) => {
+      const newState = [
+        ...prevItems,
+        { ...newItem, checked: false, held: false, all: true },
+      ];
       resolve(newState);
       return newState;
     });
@@ -32,12 +35,12 @@ export const addItem = async (setItems, newItem, setSnackbar, context) => {
 
   await setSnackbar({ open: false, message: '', severity: '' });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       setSnackbar({
         open: true,
         message: `${context} added!`,
-        severity: "success",
+        severity: 'success',
       });
       resolve(true);
     }, 300);
@@ -53,8 +56,8 @@ export const addItem = async (setItems, newItem, setSnackbar, context) => {
  * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
  */
 export const deleteItem = async (setItems, id, setSnackbar, context) => {
-  await new Promise(resolve => {
-    setItems(prevItems => {
+  await new Promise((resolve) => {
+    setItems((prevItems) => {
       const currentIndex = prevItems.findIndex((item) => item.id === id);
       // Make sure we're using the correct index and validate it
       if (currentIndex === -1) {
@@ -69,12 +72,12 @@ export const deleteItem = async (setItems, id, setSnackbar, context) => {
 
   await setSnackbar({ open: false, message: '', severity: '' });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       setSnackbar({
         open: true,
         message: `${context} deleted`,
-        severity: "error",
+        severity: 'error',
       });
       resolve();
     }, 300);
@@ -90,8 +93,8 @@ export const deleteItem = async (setItems, id, setSnackbar, context) => {
  * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
  */
 export const checkItem = async (setItems, id, setSnackbar, context) => {
-  await new Promise(resolve => {
-    setItems(prevItems => {
+  await new Promise((resolve) => {
+    setItems((prevItems) => {
       const newState = prevItems.map((item) =>
         item.id === id ? { ...item, checked: !item.checked, held: false } : item
       );
@@ -102,12 +105,12 @@ export const checkItem = async (setItems, id, setSnackbar, context) => {
 
   await setSnackbar({ open: false, message: '', severity: '' });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       setSnackbar({
         open: true,
         message: `${context} checked!`,
-        severity: "success",
+        severity: 'success',
       });
       resolve();
     }, 300);
@@ -123,8 +126,8 @@ export const checkItem = async (setItems, id, setSnackbar, context) => {
  * @returns {Promise<void>} - Returns a promise that resolves when the operation is complete.
  */
 export const holdItem = async (setItems, id, setSnackbar, context) => {
-  await new Promise(resolve => {
-    setItems(prevItems => {
+  await new Promise((resolve) => {
+    setItems((prevItems) => {
       const newState = prevItems.map((item) =>
         item.id === id ? { ...item, held: !item.held, checked: false } : item
       );
@@ -135,12 +138,12 @@ export const holdItem = async (setItems, id, setSnackbar, context) => {
 
   await setSnackbar({ open: false, message: '', severity: '' });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       setSnackbar({
         open: true,
         message: `${context} held!`,
-        severity: "info",
+        severity: 'info',
       });
       resolve();
     }, 300);
@@ -159,8 +162,6 @@ export const filterItems = (items, filter) => {
       item.title.toLowerCase().includes(filter.toLowerCase()) ||
       item.content.toLowerCase().includes(filter.toLowerCase())
   );
-
-
 };
 
 /**
@@ -171,9 +172,9 @@ export const filterItems = (items, filter) => {
  */
 export const sortItemsByChecked = (items, check) => {
   return items.filter((item) =>
-  check === "checked"? item.checked === true : item.checked === false
-  )
-}
+    check === 'checked' ? item.checked === true : item.checked === false
+  );
+};
 
 /**
  * Sort items according to the hold status
@@ -183,9 +184,9 @@ export const sortItemsByChecked = (items, check) => {
  */
 export const sortItemsByHold = (items, hold) => {
   return items.filter((item) =>
-    hold === "hold"? item.held === true : item.held === false
-  )
-}
+    hold === 'hold' ? item.held === true : item.held === false
+  );
+};
 
 /**
  * sorting items in the alphabetical order
@@ -193,10 +194,45 @@ export const sortItemsByHold = (items, hold) => {
  * @param order required order a->z or z->a
  * @returns {*} sorted items
  */
-  export const sortItemsByApha = (items, order) => {
-    const sorted = [...items].sort((a, b) =>
-      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
-    );
+export const sortItemsByApha = (items, order) => {
+  const sorted = [...items].sort((a, b) =>
+    a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+  );
 
-    return order === "titleup" ? sorted.reverse() : sorted;
+  return order === 'titleup' ? sorted.reverse() : sorted;
+};
+
+/**
+ * Multi-criteria sorting function with stable sort algorithm
+ * Sorts by: 1) Checked status, 2) Hold status, 3) Title (alphabetical)
+ * @param {Array} items - The list of items to be sorted
+ * @param {string} checkedSort - 'checked' | 'unchecked' | null
+ * @param {string} heldSort - 'hold' | 'unhold' | null
+ * @param {string} titleSort - 'titleup' | 'titledown' | null
+ * @returns {Array} - Sorted array with stable sort
+ */
+export const multiCriteriaSort = (
+  items,
+  checkedSort = null,
+  heldSort = null,
+  titleSort = null
+) => {
+  if (!items || items.length === 0) return [];
+
+  let result = [...items];
+
+  // Apply filters/sorts in priority order: Checked -> Hold -> Title
+  if (checkedSort) {
+    result = sortItemsByChecked(result, checkedSort);
   }
+
+  if (heldSort) {
+    result = sortItemsByHold(result, heldSort);
+  }
+
+  if (titleSort) {
+    result = sortItemsByApha(result, titleSort);
+  }
+
+  return result;
+};

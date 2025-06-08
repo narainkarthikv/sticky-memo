@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Card, CardContent, IconButton, Popover, TextField, Typography, Box, Tooltip, Fade, Chip } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  IconButton,
+  Popover,
+  TextField,
+  Typography,
+  Box,
+  Tooltip,
+  Fade,
+  Chip,
+} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -10,7 +21,16 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EventIcon from '@mui/icons-material/Event';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { holdItem, checkItem, deleteItem } from '../../utils/helper';
-import { cardStyles, buttonStyle, typographyStyles, popoverStyles, textFieldStyles, dateContainerStyles, dateFieldStyles, dateValueStyles } from './styles';
+import {
+  cardStyles,
+  buttonStyle,
+  typographyStyles,
+  popoverStyles,
+  textFieldStyles,
+  dateContainerStyles,
+  dateFieldStyles,
+  dateValueStyles,
+} from './styles';
 
 const BoardCard = ({
   item,
@@ -34,6 +54,7 @@ const BoardCard = ({
   setItems,
   setSnackbar,
   items,
+  isCompact = false,
 }) => {
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
@@ -70,7 +91,7 @@ const BoardCard = ({
     const updatedItems = [...items];
     updatedItems[index] = {
       ...updatedItems[index],
-      startDate: e.target.value
+      startDate: e.target.value,
     };
     setItems(updatedItems);
   };
@@ -79,38 +100,46 @@ const BoardCard = ({
     const updatedItems = [...items];
     updatedItems[index] = {
       ...updatedItems[index],
-      dueDate: e.target.value
+      dueDate: e.target.value,
     };
     setItems(updatedItems);
   };
 
   return (
     <Card
-      variant="outlined"
+      variant='outlined'
       draggable
       onDragStart={() => handleDragStart(index)}
       onDrop={(e) => handleDrop(index, e)}
       onDragOver={(e) => handleDragOver(e)}
-      sx={cardStyles(item)}
-    >
-      <CardContent sx={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column', color: 'inherit' }}>
+      sx={cardStyles(item, isCompact)}>
+      <CardContent
+        sx={{
+          padding: 0,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          color: 'inherit',
+        }}>
         <Typography sx={typographyStyles}>
           <>
             {isEditing && editingId === id ? (
-              <TextField size='small' onChange={(e) => setEditedTitle(e.target.value)} defaultValue={item.title} fullWidth />
-            ) :
-              (
-                <span style={{ fontWeight: 'bolder' }}>{item.title}</span>
-              )
-            }
+              <TextField
+                size='small'
+                onChange={(e) => setEditedTitle(e.target.value)}
+                defaultValue={item.title}
+                fullWidth
+              />
+            ) : (
+              <span style={{ fontWeight: 'bolder' }}>{item.title}</span>
+            )}
           </>
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton
               sx={buttonStyle}
               aria-describedby={ariaDescribedById}
-              onClick={(e) => handleClickPopover(e, id)}
-            >
-              <MoreVertIcon fontSize="small" />
+              onClick={(e) => handleClickPopover(e, id)}>
+              <MoreVertIcon fontSize='small' />
             </IconButton>
 
             <Popover
@@ -121,8 +150,7 @@ const BoardCard = ({
               anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-              }}
-            >
+              }}>
               <Typography sx={popoverStyles}>
                 <IconButton
                   onClick={() => {
@@ -132,22 +160,33 @@ const BoardCard = ({
                       handleEdit();
                     }
                   }}
-                  variant='contained'
-                >
+                  variant='contained'>
                   {isEditing ? (
-                    <SaveIcon fontSize="small" sx={buttonStyle} />
+                    <SaveIcon fontSize='small' sx={buttonStyle} />
                   ) : (
-                    <EditIcon fontSize="small" sx={buttonStyle} />
+                    <EditIcon fontSize='small' sx={buttonStyle} />
                   )}
                 </IconButton>
-                <IconButton onClick={() => holdItem(setItems, editingId, setSnackbar, 'Board')} variant="contained">
-                  <BackHandIcon fontSize="small" sx={buttonStyle} />
+                <IconButton
+                  onClick={() =>
+                    holdItem(setItems, editingId, setSnackbar, 'Board')
+                  }
+                  variant='contained'>
+                  <BackHandIcon fontSize='small' sx={buttonStyle} />
                 </IconButton>
-                <IconButton onClick={() => checkItem(setItems, editingId, setSnackbar, 'Board')} variant="contained">
-                  <CheckCircleIcon fontSize="small" sx={buttonStyle} />
+                <IconButton
+                  onClick={() =>
+                    checkItem(setItems, editingId, setSnackbar, 'Board')
+                  }
+                  variant='contained'>
+                  <CheckCircleIcon fontSize='small' sx={buttonStyle} />
                 </IconButton>
-                <IconButton onClick={() => deleteItem(setItems, editingId, setSnackbar, 'Board')} variant="contained">
-                  <DeleteIcon fontSize="small" sx={buttonStyle} />
+                <IconButton
+                  onClick={() =>
+                    deleteItem(setItems, editingId, setSnackbar, 'Board')
+                  }
+                  variant='contained'>
+                  <DeleteIcon fontSize='small' sx={buttonStyle} />
                 </IconButton>
               </Typography>
             </Popover>
@@ -165,11 +204,9 @@ const BoardCard = ({
               multiline
               rows={4}
             />
-          ) :
-            (
-              <span>{item.content}</span>
-            )
-          }
+          ) : (
+            <span>{item.content}</span>
+          )}
         </Typography>
 
         {/* Enhanced Date fields */}
@@ -178,15 +215,14 @@ const BoardCard = ({
           <Box
             sx={dateFieldStyles}
             onMouseEnter={() => setDateHover('start')}
-            onMouseLeave={() => setDateHover(null)}
-          >
-            <Tooltip title="Start Date" arrow>
+            onMouseLeave={() => setDateHover(null)}>
+            <Tooltip title='Start Date' arrow>
               <CalendarTodayIcon
-                fontSize="small"
-                color="primary"
+                fontSize='small'
+                color='primary'
                 sx={{
                   transition: 'transform 0.2s ease',
-                  transform: dateHover === 'start' ? 'scale(1.2)' : 'scale(1)'
+                  transform: dateHover === 'start' ? 'scale(1.2)' : 'scale(1)',
                 }}
               />
             </Tooltip>
@@ -195,27 +231,31 @@ const BoardCard = ({
               {isEditing && editingId === id ? (
                 <TextField
                   size='small'
-                  type="date"
-                  label="Start Date"
+                  type='date'
+                  label='Start Date'
                   InputLabelProps={{ shrink: true }}
                   value={item.startDate || ''}
                   onChange={handleStartDateChange}
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                 />
               ) : (
                 <Fade in={true}>
                   <Box>
                     {item.startDate ? (
                       <Chip
-                        label={`Started: ${new Date(item.startDate).toLocaleDateString()}`}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
+                        label={`Started: ${new Date(
+                          item.startDate
+                        ).toLocaleDateString()}`}
+                        color='primary'
+                        variant='outlined'
+                        size='small'
                         sx={{ background: 'rgba(255, 255, 255, 0.7)' }}
                       />
                     ) : (
-                      <Typography variant="body2" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+                      <Typography
+                        variant='body2'
+                        sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
                         No start date
                       </Typography>
                     )}
@@ -229,15 +269,14 @@ const BoardCard = ({
           <Box
             sx={dateFieldStyles}
             onMouseEnter={() => setDateHover('due')}
-            onMouseLeave={() => setDateHover(null)}
-          >
-            <Tooltip title="Due Date" arrow>
+            onMouseLeave={() => setDateHover(null)}>
+            <Tooltip title='Due Date' arrow>
               <EventIcon
-                fontSize="small"
-                color="error"
+                fontSize='small'
+                color='error'
                 sx={{
                   transition: 'transform 0.2s ease',
-                  transform: dateHover === 'due' ? 'scale(1.2)' : 'scale(1)'
+                  transform: dateHover === 'due' ? 'scale(1.2)' : 'scale(1)',
                 }}
               />
             </Tooltip>
@@ -246,43 +285,66 @@ const BoardCard = ({
               {isEditing && editingId === id ? (
                 <TextField
                   size='small'
-                  type="date"
-                  label="Due Date"
+                  type='date'
+                  label='Due Date'
                   InputLabelProps={{ shrink: true }}
                   value={item.dueDate || ''}
                   onChange={handleDueDateChange}
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                 />
               ) : (
                 <Fade in={true}>
                   <Box>
                     {item.dueDate ? (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Chip
-                          label={`Due: ${new Date(item.dueDate).toLocaleDateString()}`}
+                          label={`Due: ${new Date(
+                            item.dueDate
+                          ).toLocaleDateString()}`}
                           color={getDueDateChipColor()}
-                          variant="outlined"
-                          size="small"
+                          variant='outlined'
+                          size='small'
                           sx={{ background: 'rgba(255, 255, 255, 0.7)' }}
                         />
                         {daysRemaining !== null && (
-                          <Tooltip title={`${Math.abs(daysRemaining)} days ${daysRemaining >= 0 ? 'remaining' : 'overdue'}`}>
+                          <Tooltip
+                            title={`${Math.abs(daysRemaining)} days ${
+                              daysRemaining >= 0 ? 'remaining' : 'overdue'
+                            }`}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <AccessTimeIcon fontSize="small" color={daysRemaining < 0 ? "error" : "action"} />
-                              <Typography variant="caption" sx={{ ml: 0.5, color: daysRemaining < 0 ? 'error.main' : 'text.secondary' }}>
-                                {daysRemaining === 0 ? "Today" :
-                                  daysRemaining === 1 ? "Tomorrow" :
-                                    daysRemaining === -1 ? "Yesterday" :
-                                      daysRemaining > 0 ? `${daysRemaining} days` :
-                                        `${Math.abs(daysRemaining)} days ago`}
+                              <AccessTimeIcon
+                                fontSize='small'
+                                color={daysRemaining < 0 ? 'error' : 'action'}
+                              />
+                              <Typography
+                                variant='caption'
+                                sx={{
+                                  ml: 0.5,
+                                  color:
+                                    daysRemaining < 0
+                                      ? 'error.main'
+                                      : 'text.secondary',
+                                }}>
+                                {daysRemaining === 0
+                                  ? 'Today'
+                                  : daysRemaining === 1
+                                  ? 'Tomorrow'
+                                  : daysRemaining === -1
+                                  ? 'Yesterday'
+                                  : daysRemaining > 0
+                                  ? `${daysRemaining} days`
+                                  : `${Math.abs(daysRemaining)} days ago`}
                               </Typography>
                             </Box>
                           </Tooltip>
                         )}
                       </Box>
                     ) : (
-                      <Typography variant="body2" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+                      <Typography
+                        variant='body2'
+                        sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
                         No due date
                       </Typography>
                     )}
