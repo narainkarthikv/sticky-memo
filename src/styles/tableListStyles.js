@@ -4,25 +4,33 @@ export const tableListStyles = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  gap: theme.spacing(2),
-  padding: theme.spacing(2),
-  width: '100%',
-  height: '100vh',
-  '@media (max-width: 600px)': {
-    padding: theme.spacing(1),
-    gap: theme.spacing(1),
+  gap: {
+    xs: theme.spacing(1),
+    sm: theme.spacing(1.5),
+    md: theme.spacing(2),
   },
+  padding: {
+    xs: theme.spacing(1),
+    sm: theme.spacing(1.5),
+    md: theme.spacing(2),
+  },
+  width: '100%',
+  minHeight: '100vh',
 };
 
 export const tableStyles = {
-  width: '90%',
+  width: {
+    xs: '100%',
+    sm: '95%',
+    md: '90%',
+    lg: '85%',
+  },
   display: 'table',
   margin: 'auto',
   overflowY: 'auto',
-  '@media (max-width: 600px)': {
-    width: '100%',
-    margin: '0',
-  },
+  overflowX: 'auto',
+  borderRadius: theme.spacing(1),
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
 };
 
 export const tableHeadStyles = {
@@ -38,29 +46,40 @@ export const tableCellStyles = {
 export const boxStyles = {
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'flex-start',
   alignItems: 'center',
-  bgcolor: 'background.default',
-  color:  'text.primary',
-  gap: '10px',
-  marginTop: 8,
+  backgroundColor: theme.palette.background.default,
+  padding: theme.spacing(2),
   width: '100%',
-  height:'100vh',
+  minHeight: '100vh',
+  maxHeight: '100vh',
+  overflow: 'hidden',
+  bgcolor: 'background.default',
+  color: 'text.primary',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
 };
 
 export const scrollBoxStyles = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-  gap: theme.spacing(2),
-  padding: theme.spacing(2),
+  flex: 1,
+  width: '100%',
   overflowY: 'auto',
-  '&::-webkit-scrollbar': { width: '8px', backgroundColor: '#f1f1f1', borderRadius: '8px' },
-  '&::-webkit-scrollbar-thumb': { backgroundColor: theme.palette.secondary.main, borderRadius: '8px', transition: 'background-color 0.3s ease-in-out' },
-  '&::-webkit-scrollbar-thumb:hover': { backgroundColor: theme.palette.accent.main },
-  '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1', borderRadius: '8px' },
-  '@media (max-width: 600px)': {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    padding: theme.spacing(1),
-    gap: theme.spacing(1),
+  overflowX: 'hidden',
+  padding: theme.spacing(1),
+  '&::-webkit-scrollbar': {
+    width: '6px',
+    backgroundColor: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: theme.palette.action.disabled,
+    borderRadius: '3px',
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: 'transparent',
   },
 };
 

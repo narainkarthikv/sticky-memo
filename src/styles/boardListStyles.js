@@ -2,40 +2,50 @@ import theme from '../theme';
 
 export const boardListStyles = {
   display: 'flex',
-  flexWrap: 'wrap',
   flexDirection: 'column',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   alignItems: 'center',
   backgroundColor: theme.palette.background.default,
-  margin: theme.spacing(5),
-  gap: theme.spacing(1),
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   width: '100%',
-  height: 'auto',
-  bgcolor: 'background.default',
-  color:  'text.primary',
   minHeight: '100vh',
-  '@media (max-width: 600px)': {
+  maxHeight: '100vh',
+  overflow: 'hidden',
+  bgcolor: 'background.default',
+  color: 'text.primary',
+  [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(1),
-    gap: theme.spacing(1),
-    margin: theme.spacing(3),
   },
 };
 
 export const scrollBoxStyles = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', // Reduced min width
-  gap: theme.spacing(5), // Reduced gap
-  padding: theme.spacing(1), // Reduced padding
+  flex: 1,
+  width: '100%',
   overflowY: 'auto',
-  '&::-webkit-scrollbar': { width: '2px', backgroundColor: '#f1f1f1', borderRadius: '8px' },
-  '&::-webkit-scrollbar-thumb': { backgroundColor: theme.palette.secondary.main, borderRadius: '8px', transition: 'background-color 0.3s ease-in-out' },
-  '&::-webkit-scrollbar-thumb:hover': { backgroundColor: theme.palette.accent.main },
-  '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1', borderRadius: '8px' },
-  '@media (max-width: 600px)': {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', // Adjusted for smaller screens
-    padding: theme.spacing(1),
-    gap: theme.spacing(1),
+  overflowX: 'hidden',
+  padding: theme.spacing(1),
+  '&::-webkit-scrollbar': {
+    width: '6px',
+    backgroundColor: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: theme.palette.action.disabled,
+    borderRadius: '3px',
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: 'transparent',
   },
 };
 
+export const gridContainerStyles = {
+  width: '100%',
+  maxWidth: '1400px',
+  margin: '0 auto',
+  padding: theme.spacing(1),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(0.5),
+  },
+};

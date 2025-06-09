@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Card, CardContent, IconButton, Popover, TextField, Typography, Box, Tooltip, Fade, Chip } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  IconButton,
+  Popover,
+  TextField,
+  Typography,
+  Box,
+  Tooltip,
+  Fade,
+  Chip,
+} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -9,9 +20,33 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EventIcon from '@mui/icons-material/Event';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PushPin from '@mui/icons-material/PushPin';
+import PushPinOutlined from '@mui/icons-material/PushPinOutlined';
+import Palette from '@mui/icons-material/Palette';
 import { holdItem, checkItem, deleteItem } from '../../utils/helper';
-import { cardStyles, buttonStyle, typographyStyles, popoverStyles, textFieldStyles, dateContainerStyles, dateFieldStyles, dateValueStyles } from './styles';
+import {
+  cardStyles,
+  buttonStyle,
+  typographyStyles,
+  popoverStyles,
+  textFieldStyles,
+  dateContainerStyles,
+  dateFieldStyles,
+  dateValueStyles,
+} from './styles';
 import { useTheme } from '@mui/material/styles';
+
+// Note color constants
+const NOTE_COLORS = [
+  { name: 'Default', value: 'default', color: 'transparent' },
+  { name: 'Red', value: 'red', color: '#ffebee' },
+  { name: 'Orange', value: 'orange', color: '#fff3e0' },
+  { name: 'Yellow', value: 'yellow', color: '#fffde7' },
+  { name: 'Green', value: 'green', color: '#e8f5e8' },
+  { name: 'Teal', value: 'teal', color: '#e0f2f1' },
+  { name: 'Blue', value: 'blue', color: '#e3f2fd' },
+  { name: 'Purple', value: 'purple', color: '#f3e5f5' },
+];
 
 const NoteCard = ({
   item,
@@ -35,6 +70,7 @@ const NoteCard = ({
   setItems,
   setSnackbar,
   items,
+  isCompact = false,
 }) => {
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
@@ -72,7 +108,7 @@ const NoteCard = ({
     const updatedItems = [...items];
     updatedItems[index] = {
       ...updatedItems[index],
-      startDate: e.target.value
+      startDate: e.target.value,
     };
     setItems(updatedItems);
   };
@@ -81,36 +117,146 @@ const NoteCard = ({
     const updatedItems = [...items];
     updatedItems[index] = {
       ...updatedItems[index],
-      dueDate: e.target.value
+      dueDate: e.target.value,
     };
     setItems(updatedItems);
   };
 
+  // Handle color change
+  const handleColorChange = (newColor) => {
+    const updatedItems = [...items];
+    updatedItems[index] = {
+      ...updatedItems[index],
+      color: newColor,
+    };
+    setItems(updatedItems);
+  };
+
+  // Handle pin toggle
+  const handlePinToggle = () => {
+    const updatedItems = [...items];
+    updatedItems[index] = {
+      ...updatedItems[index],
+      pinned: !updatedItems[index].pinned,
+    };
+    setItems(updatedItems);
+  };
+
+  // Get background color based on note color
+  const getBackgroundColor = () => {
+    const colorData = NOTE_COLORS.find(
+      (color) => color.value === (item.color || 'default')
+    );
+    return colorData ? colorData.color : 'transparent';
+  };
+
   return (
     <Card
-      variant="outlined"
+      variant='outlined'
       draggable
       onDragStart={() => handleDragStart(index)}
       onDrop={(e) => handleDrop(index, e)}
       onDragOver={(e) => handleDragOver(e)}
-      sx={cardStyles(item)}
-    >
-      <CardContent sx={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      sx={{
+        ...cardStyles(item, isCompact),
+        backgroundColor: getBackgroundColor(),
+        border: item.pinned
+          ? `2px solid ${theme.palette.warning.main}`
+          : `1px solid ${theme.palette.divider}`,
+        boxShadow: isCompact
+          ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+          : '0 2px 4px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.24)',
+        borderRadius: theme.spacing(isCompact ? 1 : 2),
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          boxShadow: isCompact
+            ? '0 2px 8px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.24)'
+            : '0 4px 12px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.24)',
+          transform: 'translateY(-2px)',
+        },
+      }}>
+      <CardContent
+        sx={{
+          padding: 0,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
         <Typography sx={typographyStyles}>
           <>
             {isEditing && editingId === id ? (
-              <TextField size='small' onChange={(e) => setEditedTitle(e.target.value)} defaultValue={item.title} fullWidth />
+              <TextField
+                size='small'
+                onChange={(e) => setEditedTitle(e.target.value)}
+                defaultValue={item.title}
+                fullWidth
+              />
             ) : (
               <span style={{ fontWeight: 'bolder' }}>{item.title}</span>
             )}
           </>
-          <Box sx={{ marginLeft: 'auto' }}>
+          <Box
+            sx={{
+              marginLeft: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+            }}>
+            {/* Pin Button */}
+            <Tooltip title={item.pinned ? 'Unpin note' : 'Pin note'} arrow>
+              <IconButton
+                onClick={handlePinToggle}
+                size={isCompact ? 'small' : 'medium'}
+                sx={{
+                  color: item.pinned
+                    ? theme.palette.warning.main
+                    : theme.palette.action.active,
+                  '&:hover': {
+                    backgroundColor: theme.palette.action.hover,
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.2s ease-in-out',
+                }}>
+                {item.pinned ? (
+                  <PushPin fontSize={isCompact ? 'small' : 'medium'} />
+                ) : (
+                  <PushPinOutlined fontSize={isCompact ? 'small' : 'medium'} />
+                )}
+              </IconButton>
+            </Tooltip>
+
+            {/* Color Picker */}
+            <Tooltip title='Change color' arrow>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Simple color cycling for now
+                  const currentIndex = NOTE_COLORS.findIndex(
+                    (c) => c.value === (item.color || 'default')
+                  );
+                  const nextIndex = (currentIndex + 1) % NOTE_COLORS.length;
+                  handleColorChange(NOTE_COLORS[nextIndex].value);
+                }}
+                size={isCompact ? 'small' : 'medium'}
+                sx={{
+                  backgroundColor: getBackgroundColor(),
+                  border:
+                    (item.color || 'default') === 'default'
+                      ? `1px solid ${theme.palette.divider}`
+                      : 'none',
+                  '&:hover': {
+                    opacity: 0.8,
+                  },
+                  transition: 'all 0.2s ease-in-out',
+                }}>
+                <Palette fontSize={isCompact ? 'small' : 'medium'} />
+              </IconButton>
+            </Tooltip>
             <IconButton
               sx={buttonStyle}
               aria-describedby={ariaDescribedById}
-              onClick={(e) => handleClickPopover(e, id)}
-            >
-              <MoreVertIcon fontSize="small" />
+              onClick={(e) => handleClickPopover(e, id)}>
+              <MoreVertIcon fontSize='small' />
             </IconButton>
 
             <Popover
@@ -121,44 +267,51 @@ const NoteCard = ({
               anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-              }}
-            >
+              }}>
               <Typography sx={popoverStyles}>
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
                     handleEdit();
                     handleClosePopover();
-                  }}
-                >
-                  <EditIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
+                  }}>
+                  <EditIcon
+                    fontSize='small'
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  />
                 </IconButton>
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
                     checkItem(setItems, id, setSnackbar, 'Note');
                     handleClosePopover();
-                  }}
-                >
-                  <CheckCircleIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
+                  }}>
+                  <CheckCircleIcon
+                    fontSize='small'
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  />
                 </IconButton>
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
                     holdItem(setItems, id, setSnackbar, 'Note');
                     handleClosePopover();
-                  }}
-                >
-                  <BackHandIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
+                  }}>
+                  <BackHandIcon
+                    fontSize='small'
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  />
                 </IconButton>
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
                     deleteItem(setItems, id, setSnackbar, 'Note');
                     handleClosePopover();
-                  }}
-                >
-                  <DeleteIcon fontSize="small" sx={{ color: theme.palette.primary.contrastText }} />
+                  }}>
+                  <DeleteIcon
+                    fontSize='small'
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  />
                 </IconButton>
               </Typography>
             </Popover>
@@ -179,17 +332,17 @@ const NoteCard = ({
               />
               <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                 <TextField
-                  size="small"
-                  id="startDate"
-                  label="Start Date"
-                  type="date"
+                  size='small'
+                  id='startDate'
+                  label='Start Date'
+                  type='date'
                   value={item.startDate || ''}
                   onChange={handleStartDateChange}
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
                       <CalendarTodayIcon
-                        fontSize="small"
+                        fontSize='small'
                         sx={{ mr: 1, color: theme.palette.primary.main }}
                       />
                     ),
@@ -210,17 +363,17 @@ const NoteCard = ({
                   }}
                 />
                 <TextField
-                  size="small"
-                  id="dueDate"
-                  label="Due Date"
-                  type="date"
+                  size='small'
+                  id='dueDate'
+                  label='Due Date'
+                  type='date'
                   value={item.dueDate || ''}
                   onChange={handleDueDateChange}
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
                       <EventIcon
-                        fontSize="small"
+                        fontSize='small'
                         sx={{ mr: 1, color: theme.palette.secondary.main }}
                       />
                     ),
@@ -243,9 +396,10 @@ const NoteCard = ({
               </Box>
               <IconButton
                 sx={{ ...buttonStyle, mt: 1 }}
-                onClick={() => handleSave(item, id, editedTitle, editedContent)}
-              >
-                <SaveIcon fontSize="small" />
+                onClick={() =>
+                  handleSave(item, id, editedTitle, editedContent)
+                }>
+                <SaveIcon fontSize='small' />
               </IconButton>
             </>
           ) : (
@@ -253,13 +407,13 @@ const NoteCard = ({
               <Typography sx={{ mb: 2 }}>{item.content}</Typography>
               <Box sx={dateContainerStyles}>
                 {item.startDate && (
-                  <Tooltip title="Start Date" TransitionComponent={Fade}>
+                  <Tooltip title='Start Date' TransitionComponent={Fade}>
                     <Box sx={dateFieldStyles}>
                       <CalendarTodayIcon
-                        fontSize="small"
+                        fontSize='small'
                         sx={{
                           mr: 0.5,
-                          color: theme.palette.primary.main
+                          color: theme.palette.primary.main,
                         }}
                       />
                       <Typography sx={dateValueStyles}>
@@ -269,13 +423,13 @@ const NoteCard = ({
                   </Tooltip>
                 )}
                 {item.dueDate && (
-                  <Tooltip title="Due Date" TransitionComponent={Fade}>
+                  <Tooltip title='Due Date' TransitionComponent={Fade}>
                     <Box sx={dateFieldStyles}>
                       <EventIcon
-                        fontSize="small"
+                        fontSize='small'
                         sx={{
                           mr: 0.5,
-                          color: theme.palette.secondary.main
+                          color: theme.palette.secondary.main,
                         }}
                       />
                       <Typography sx={dateValueStyles}>
@@ -286,29 +440,33 @@ const NoteCard = ({
                 )}
                 {daysRemaining !== null && (
                   <Chip
-                    size="small"
+                    size='small'
                     icon={
                       <AccessTimeIcon
                         sx={{
-                          color: daysRemaining < 0 ?
-                            theme.palette.error.main :
-                            daysRemaining <= 2 ?
-                              theme.palette.warning.main :
-                              theme.palette.success.main
+                          color:
+                            daysRemaining < 0
+                              ? theme.palette.error.main
+                              : daysRemaining <= 2
+                              ? theme.palette.warning.main
+                              : theme.palette.success.main,
                         }}
                       />
                     }
-                    label={`${daysRemaining} days ${daysRemaining < 0 ? 'overdue' : 'remaining'}`}
+                    label={`${daysRemaining} days ${
+                      daysRemaining < 0 ? 'overdue' : 'remaining'
+                    }`}
                     color={getDueDateChipColor()}
                     sx={{
                       ml: 1,
                       fontWeight: 500,
                       border: '1px solid',
-                      borderColor: daysRemaining < 0 ?
-                        theme.palette.error.main :
-                        daysRemaining <= 2 ?
-                          theme.palette.warning.main :
-                          theme.palette.success.main
+                      borderColor:
+                        daysRemaining < 0
+                          ? theme.palette.error.main
+                          : daysRemaining <= 2
+                          ? theme.palette.warning.main
+                          : theme.palette.success.main,
                     }}
                   />
                 )}

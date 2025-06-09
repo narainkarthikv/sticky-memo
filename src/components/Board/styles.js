@@ -1,48 +1,77 @@
 import theme from '../../theme';
 import { styled } from '@mui/system';
 
-export const cardStyles = (item) => ({
+export const cardStyles = (item, isCompact = false) => ({
   color: theme.palette.text.primary,
   display: 'flex',
   flexDirection: 'column',
   background: `linear-gradient(135deg, ${
-    item.checked ? theme.palette.success.light : item.held ? theme.palette.warning.light : theme.palette.accent.light
+    item.checked
+      ? theme.palette.success.light
+      : item.held
+      ? theme.palette.warning.light
+      : theme.palette.accent.light
   }, ${
-    item.checked ? theme.palette.success.main : item.held ? theme.palette.warning.main : theme.palette.accent.main
+    item.checked
+      ? theme.palette.success.main
+      : item.held
+      ? theme.palette.warning.main
+      : theme.palette.accent.main
   })`,
-  borderRadius: theme.spacing(2),
-  width: '280px', // Reduced width for better spacing
-  minHeight: theme.spacing(28), // Adjusted height
-  padding: theme.spacing(1.5), // Reduced padding
-  margin: theme.spacing(1.5), // Reduced margin
-  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  borderRadius: theme.spacing(isCompact ? 1 : 2),
+  width: '100%',
+  minHeight: theme.spacing(isCompact ? 18 : 24),
+  maxHeight: theme.spacing(isCompact ? 32 : 40),
+  padding: theme.spacing(isCompact ? 1 : 2),
+  boxShadow: isCompact
+    ? '0 1px 4px rgba(0, 0, 0, 0.1)'
+    : '0 2px 8px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
   '&:hover': {
-    transform: 'scale(1.05)',
-    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.2)',
+    transform: 'translateY(-2px)',
+    boxShadow: isCompact
+      ? '0 2px 8px rgba(0, 0, 0, 0.15)'
+      : '0 4px 12px rgba(0, 0, 0, 0.15)',
   },
   [theme.breakpoints.down('sm')]: {
-    maxWidth: '90%', // Adjusted for smaller screens
-    margin: theme.spacing(1),
-    padding: theme.spacing(1),
+    minHeight: theme.spacing(isCompact ? 16 : 20),
+    padding: theme.spacing(isCompact ? 0.75 : 1.5),
   },
 });
 
 export const buttonStyle = {
   color: theme.palette.primary.contrastText,
-  borderRadius: '100%',
+  borderRadius: '50%',
   backgroundColor: theme.palette.secondary.main,
-  padding: '2px', // Reduced padding for compactness
+  padding: theme.spacing(0.25),
+  minWidth: { xs: 40, sm: 44 }, // Touch-friendly minimum size
+  minHeight: { xs: 40, sm: 44 },
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.dark,
+    transform: 'scale(1.05)',
+  },
+  transition: 'all 0.2s ease-in-out',
+  // Touch device optimizations
+  '@media (hover: none)': {
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+      transform: 'none',
+    },
+  },
 };
 
 export const typographyStyles = {
-  height: '2em',
+  minHeight: { xs: theme.spacing(5), sm: theme.spacing(6) },
   fontWeight: 'bold',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '0 1em',
-  borderRadius: '8px 8px 0 0',
+  padding: {
+    xs: `0 ${theme.spacing(1)}`,
+    sm: `0 ${theme.spacing(1.5)}`,
+    md: `0 ${theme.spacing(2)}`,
+  },
+  borderRadius: `${theme.spacing(1)} ${theme.spacing(1)} 0 0`,
 };
 
 export const popoverStyles = {
@@ -109,7 +138,7 @@ export const iconButtonStyles = {
 
 // New styles for date fields
 export const dateContainerStyles = {
-  display: 'flex', 
+  display: 'flex',
   flexDirection: 'column',
   gap: 2,
   mt: 2,
