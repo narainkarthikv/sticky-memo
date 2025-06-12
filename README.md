@@ -147,6 +147,40 @@ We welcome contributions! To contribute to Sticky-Memo, follow these steps:
 
 9. Create a pull request from your forked repository to the main repository. Go to the "Pull Requests" tab on the main repository, and click "New Pull Request". Follow the instructions to create your pull request.
 
+## Development Standards
+
+### Code Style
+- We use ESLint and Prettier for code formatting and linting
+- EditorConfig ensures consistent coding style across different editors
+- All JavaScript/JSX files must follow the established ESLint rules
+- Maximum line length is 100 characters
+- Use 2 spaces for indentation
+
+### Documentation
+- All components, functions, and methods must have JSDoc documentation
+- Include clear and concise descriptions for parameters and return values
+- Document complex logic with inline comments
+- Keep the README and other documentation up to date
+
+### Git Workflow
+- Create feature branches from `main` using format: `feature/description`
+- Create bug fix branches using format: `fix/description`
+- Follow conventional commits specification
+- Submit PRs using the provided template
+- Squash commits before merging
+
+### Code Review Process
+- All PRs require at least one review
+- Address all comments and suggestions
+- Ensure CI checks pass before merging
+- Keep PRs focused and reasonably sized
+
+### Testing
+- Write unit tests for new features
+- Maintain test coverage above 80%
+- Test components in isolation
+- Include both positive and negative test cases
+
 ## Contributors
 
 We appreciate the contributions of the following individuals: [Contributors](https://github.com/narainkarthikv/Sticky-Memo/blob/main/Contributors.md)

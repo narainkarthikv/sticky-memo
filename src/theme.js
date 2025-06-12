@@ -28,6 +28,27 @@ const theme = createTheme({
       secondary: '#757575',
       disabled: '#bdbdbd',
     },
+    error: {
+      main: '#f44336',
+      light: '#e57373',
+      dark: '#d32f2f',
+    },
+    warning: {
+      main: '#ff9800',
+      light: '#ffb74d',
+      dark: '#f57c00',
+    },
+    success: {
+      main: '#4caf50',
+      light: '#81c784',
+      dark: '#388e3c',
+    },
+  },
+  shadows: {
+    card: '0 2px 4px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24)',
+    cardHover: '0 4px 8px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.24)',
+    button: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    buttonHover: '0 4px 12px rgba(0, 0, 0, 0.2)',
   },
   typography: {
     fontFamily: "'Outfit','Poppins', sans-serif",
