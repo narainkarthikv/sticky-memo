@@ -67,7 +67,6 @@ const NOTE_COLORS = [
  * @param {function} props.handleClickPopover - Popover click handler.
  * @param {function} props.handleClosePopover - Popover close handler.
  * @param {object} props.anchorEl - Popover anchor element.
-//  * @param {function} props.setAnchorEl - Setter for anchor element.
  * @param {function} props.handleDragStart - Drag start handler.
  * @param {function} props.handleDrop - Drop handler.
  * @param {function} props.handleDragOver - Drag over handler.
@@ -92,7 +91,6 @@ const NoteCard = ({
   handleClickPopover,
   handleClosePopover,
   anchorEl,
-  // setAnchorEl,
   handleDragStart,
   handleDrop,
   handleDragOver,
@@ -103,7 +101,6 @@ const NoteCard = ({
 }) => {
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
-  // const [dateHover, setDateHover] = useState(null);
   const theme = useTheme();
 
   /**
@@ -303,12 +300,14 @@ const NoteCard = ({
                 <Palette fontSize={isCompact ? 'small' : 'medium'} />
               </IconButton>
             </Tooltip>
-            <IconButton
-              aria-describedby={ariaDescribedById}
-              sx={buttonStyle}
-              onClick={(e) => handleClickPopover(e, id)}>
-              <MoreVertIcon fontSize='small' />
-            </IconButton>
+            <Tooltip arrow placement='right' title='More actions'>
+              <IconButton
+                aria-describedby={ariaDescribedById}
+                sx={buttonStyle}
+                onClick={(e) => handleClickPopover(e, id)}>
+                <MoreVertIcon fontSize='small' />
+              </IconButton>
+            </Tooltip>
 
             <Popover
               anchorEl={anchorEl}
@@ -320,18 +319,23 @@ const NoteCard = ({
               open={open}
               onClose={handleClosePopover}>
               <Typography sx={popoverStyles}>
-                <IconButton
-                  sx={buttonStyle}
-                  onClick={() => {
-                    handleEdit();
-                    handleClosePopover();
-                  }}>
-                  <EditIcon
-                    fontSize='small'
-                    sx={{ color: theme.palette.primary.contrastText }}
-                  />
-                </IconButton>
-                <Tooltip arrow placement='right' title='Check note'>
+                <Tooltip arrow placement='right' title='Edit note'>
+                  <IconButton
+                    sx={buttonStyle}
+                    onClick={() => {
+                      handleEdit();
+                      handleClosePopover();
+                    }}>
+                    <EditIcon
+                      fontSize='small'
+                      sx={{ color: theme.palette.primary.contrastText }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  arrow
+                  placement='right'
+                  title={item.checked ? 'Uncheck note' : 'Check note'}>
                   <IconButton
                     sx={buttonStyle}
                     onClick={() => {
@@ -344,28 +348,35 @@ const NoteCard = ({
                     />
                   </IconButton>
                 </Tooltip>
-                <IconButton
-                  sx={buttonStyle}
-                  onClick={() => {
-                    holdItem(setItems, id, setSnackbar, 'Note');
-                    handleClosePopover();
-                  }}>
-                  <BackHandIcon
-                    fontSize='small'
-                    sx={{ color: theme.palette.primary.contrastText }}
-                  />
-                </IconButton>
-                <IconButton
-                  sx={buttonStyle}
-                  onClick={() => {
-                    deleteItem(setItems, id, setSnackbar, 'Note');
-                    handleClosePopover();
-                  }}>
-                  <DeleteIcon
-                    fontSize='small'
-                    sx={{ color: theme.palette.primary.contrastText }}
-                  />
-                </IconButton>
+                <Tooltip
+                  arrow
+                  placement='right'
+                  title={item.held ? 'Unhold note' : 'Hold note'}>
+                  <IconButton
+                    sx={buttonStyle}
+                    onClick={() => {
+                      holdItem(setItems, id, setSnackbar, 'Note');
+                      handleClosePopover();
+                    }}>
+                    <BackHandIcon
+                      fontSize='small'
+                      sx={{ color: theme.palette.primary.contrastText }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip arrow placement='right' title='Delete note'>
+                  <IconButton
+                    sx={buttonStyle}
+                    onClick={() => {
+                      deleteItem(setItems, id, setSnackbar, 'Note');
+                      handleClosePopover();
+                    }}>
+                    <DeleteIcon
+                      fontSize='small'
+                      sx={{ color: theme.palette.primary.contrastText }}
+                    />
+                  </IconButton>
+                </Tooltip>
               </Typography>
             </Popover>
           </Box>
@@ -447,13 +458,15 @@ const NoteCard = ({
                   onChange={handleDueDateChange}
                 />
               </Box>
-              <IconButton
-                sx={{ ...buttonStyle, mt: 1 }}
-                onClick={() =>
-                  handleSave(item, id, editedTitle, editedContent)
-                }>
-                <SaveIcon fontSize='small' />
-              </IconButton>
+              <Tooltip arrow placement='right' title='Save note'>
+                <IconButton
+                  sx={{ ...buttonStyle, mt: 1 }}
+                  onClick={() =>
+                    handleSave(item, id, editedTitle, editedContent)
+                  }>
+                  <SaveIcon fontSize='small' />
+                </IconButton>
+              </Tooltip>
             </>
           ) : (
             <>
