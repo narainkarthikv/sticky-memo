@@ -1,4 +1,16 @@
-import React, { useState } from 'react';
+// import { useState } from 'react'
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import BackHandIcon from '@mui/icons-material/BackHand';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import EventIcon from '@mui/icons-material/Event';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Palette from '@mui/icons-material/Palette';
+import PushPin from '@mui/icons-material/PushPin';
+import PushPinOutlined from '@mui/icons-material/PushPinOutlined';
+import SaveIcon from '@mui/icons-material/Save';
 import {
   Card,
   CardContent,
@@ -11,19 +23,9 @@ import {
   Fade,
   Chip,
 } from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
-import BackHandIcon from '@mui/icons-material/BackHand';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import EventIcon from '@mui/icons-material/Event';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PushPin from '@mui/icons-material/PushPin';
-import PushPinOutlined from '@mui/icons-material/PushPinOutlined';
-import Palette from '@mui/icons-material/Palette';
-import { holdItem, checkItem, deleteItem } from '../../utils/helper';
+import { useTheme } from '@mui/material/styles';
+import PropTypes from 'prop-types';
+
 import {
   cardStyles,
   buttonStyle,
@@ -34,7 +36,7 @@ import {
   dateFieldStyles,
   dateValueStyles,
 } from './styles';
-import { useTheme } from '@mui/material/styles';
+import { holdItem, checkItem, deleteItem } from '../../utils/helper';
 
 // Note color constants
 const NOTE_COLORS = [
@@ -48,6 +50,33 @@ const NOTE_COLORS = [
   { name: 'Purple', value: 'purple', color: '#f3e5f5' },
 ];
 
+/**
+ * NoteCard component for displaying a note.
+ * @param {object} props - The props for NoteCard.
+ * @param {object} props.item - The note item.
+ * @param {number} props.index - The index of the note.
+ * @param {string|number} props.id - The note id.
+ * @param {boolean} props.isEditing - Is the note being edited.
+ * @param {string|number} props.editingId - The id of the note being edited.
+ * @param {string} props.editedTitle - The edited title.
+ * @param {function} props.setEditedTitle - Setter for edited title.
+ * @param {string} props.editedContent - The edited content.
+ * @param {function} props.setEditedContent - Setter for edited content.
+ * @param {function} props.handleEdit - Edit handler.
+ * @param {function} props.handleSave - Save handler.
+ * @param {function} props.handleClickPopover - Popover click handler.
+ * @param {function} props.handleClosePopover - Popover close handler.
+ * @param {object} props.anchorEl - Popover anchor element.
+//  * @param {function} props.setAnchorEl - Setter for anchor element.
+ * @param {function} props.handleDragStart - Drag start handler.
+ * @param {function} props.handleDrop - Drop handler.
+ * @param {function} props.handleDragOver - Drag over handler.
+ * @param {function} props.setItems - Setter for items.
+ * @param {function} props.setSnackbar - Setter for snackbar.
+ * @param {array} props.items - List of items.
+ * @param {boolean} [props.isCompact=false] - Compact mode.
+ * @returns {JSX.Element} The rendered NoteCard component.
+ */
 const NoteCard = ({
   item,
   index,
@@ -63,7 +92,7 @@ const NoteCard = ({
   handleClickPopover,
   handleClosePopover,
   anchorEl,
-  setAnchorEl,
+  // setAnchorEl,
   handleDragStart,
   handleDrop,
   handleDragOver,
@@ -74,10 +103,13 @@ const NoteCard = ({
 }) => {
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
-  const [dateHover, setDateHover] = useState(null);
+  // const [dateHover, setDateHover] = useState(null);
   const theme = useTheme();
 
-  // Calculate days remaining if due date exists
+  /**
+   * Calculates number of days remaining
+   * @returns {number|null}
+   */
   const calculateDaysRemaining = () => {
     if (!item.dueDate) return null;
 
@@ -95,7 +127,10 @@ const NoteCard = ({
 
   const daysRemaining = calculateDaysRemaining();
 
-  // Get chip color based on days remaining
+  /**
+   * Get chip color based on days remaining.
+   * @returns {string}
+   */
   const getDueDateChipColor = () => {
     if (daysRemaining === null) return 'default';
     if (daysRemaining < 0) return 'error';
@@ -103,7 +138,10 @@ const NoteCard = ({
     return 'success';
   };
 
-  // Handle date changes
+  /**
+   * Handle start date changes
+   * @param {object} e -> Change event for the start date input
+   */
   const handleStartDateChange = (e) => {
     const updatedItems = [...items];
     updatedItems[index] = {
@@ -113,6 +151,10 @@ const NoteCard = ({
     setItems(updatedItems);
   };
 
+  /**
+   * Handle due date changes
+   * @param {object} e -> Change event for due date input
+   */
   const handleDueDateChange = (e) => {
     const updatedItems = [...items];
     updatedItems[index] = {
@@ -122,7 +164,10 @@ const NoteCard = ({
     setItems(updatedItems);
   };
 
-  // Handle color change
+  /**
+   * Handle color change
+   * @param {string} newColor -> New color value for the note
+   */
   const handleColorChange = (newColor) => {
     const updatedItems = [...items];
     updatedItems[index] = {
@@ -132,7 +177,10 @@ const NoteCard = ({
     setItems(updatedItems);
   };
 
-  // Handle pin toggle
+  /**
+   * Handle pin toggle
+   * @returns {void}
+   */
   const handlePinToggle = () => {
     const updatedItems = [...items];
     updatedItems[index] = {
@@ -142,21 +190,20 @@ const NoteCard = ({
     setItems(updatedItems);
   };
 
-  // Get background color based on note color
+  /**
+   * Get background color based on note color
+   * @returns {string}
+   */
   const getBackgroundColor = () => {
     const colorData = NOTE_COLORS.find(
-      (color) => color.value === (item.color || 'default')
+      (color) => color.value === (item.color || 'default'),
     );
     return colorData ? colorData.color : 'transparent';
   };
 
   return (
     <Card
-      variant='outlined'
       draggable
-      onDragStart={() => handleDragStart(index)}
-      onDrop={(e) => handleDrop(index, e)}
-      onDragOver={(e) => handleDragOver(e)}
       sx={{
         ...cardStyles(item, isCompact),
         backgroundColor: getBackgroundColor(),
@@ -174,7 +221,11 @@ const NoteCard = ({
             : '0 4px 12px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.24)',
           transform: 'translateY(-2px)',
         },
-      }}>
+      }}
+      variant='outlined'
+      onDragOver={(e) => handleDragOver(e)}
+      onDragStart={() => handleDragStart(index)}
+      onDrop={(e) => handleDrop(index, e)}>
       <CardContent
         sx={{
           padding: 0,
@@ -186,10 +237,10 @@ const NoteCard = ({
           <>
             {isEditing && editingId === id ? (
               <TextField
+                fullWidth
+                defaultValue={item.title}
                 size='small'
                 onChange={(e) => setEditedTitle(e.target.value)}
-                defaultValue={item.title}
-                fullWidth
               />
             ) : (
               <span style={{ fontWeight: 'bolder' }}>{item.title}</span>
@@ -203,9 +254,8 @@ const NoteCard = ({
               gap: 0.5,
             }}>
             {/* Pin Button */}
-            <Tooltip title={item.pinned ? 'Unpin note' : 'Pin note'} arrow>
+            <Tooltip arrow title={item.pinned ? 'Unpin note' : 'Pin note'}>
               <IconButton
-                onClick={handlePinToggle}
                 size={isCompact ? 'small' : 'medium'}
                 sx={{
                   color: item.pinned
@@ -216,7 +266,8 @@ const NoteCard = ({
                     transform: 'scale(1.1)',
                   },
                   transition: 'all 0.2s ease-in-out',
-                }}>
+                }}
+                onClick={handlePinToggle}>
                 {item.pinned ? (
                   <PushPin fontSize={isCompact ? 'small' : 'medium'} />
                 ) : (
@@ -226,17 +277,8 @@ const NoteCard = ({
             </Tooltip>
 
             {/* Color Picker */}
-            <Tooltip title='Change color' arrow>
+            <Tooltip arrow title='Change color'>
               <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Simple color cycling for now
-                  const currentIndex = NOTE_COLORS.findIndex(
-                    (c) => c.value === (item.color || 'default')
-                  );
-                  const nextIndex = (currentIndex + 1) % NOTE_COLORS.length;
-                  handleColorChange(NOTE_COLORS[nextIndex].value);
-                }}
                 size={isCompact ? 'small' : 'medium'}
                 sx={{
                   backgroundColor: getBackgroundColor(),
@@ -248,26 +290,35 @@ const NoteCard = ({
                     opacity: 0.8,
                   },
                   transition: 'all 0.2s ease-in-out',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Simple color cycling for now
+                  const currentIndex = NOTE_COLORS.findIndex(
+                    (c) => c.value === (item.color || 'default'),
+                  );
+                  const nextIndex = (currentIndex + 1) % NOTE_COLORS.length;
+                  handleColorChange(NOTE_COLORS[nextIndex].value);
                 }}>
                 <Palette fontSize={isCompact ? 'small' : 'medium'} />
               </IconButton>
             </Tooltip>
             <IconButton
-              sx={buttonStyle}
               aria-describedby={ariaDescribedById}
+              sx={buttonStyle}
               onClick={(e) => handleClickPopover(e, id)}>
               <MoreVertIcon fontSize='small' />
             </IconButton>
 
             <Popover
-              id={ariaDescribedById}
-              open={open}
               anchorEl={anchorEl}
-              onClose={handleClosePopover}
               anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-              }}>
+              }}
+              id={ariaDescribedById}
+              open={open}
+              onClose={handleClosePopover}>
               <Typography sx={popoverStyles}>
                 <IconButton
                   sx={buttonStyle}
@@ -280,17 +331,19 @@ const NoteCard = ({
                     sx={{ color: theme.palette.primary.contrastText }}
                   />
                 </IconButton>
-                <IconButton
-                  sx={buttonStyle}
-                  onClick={() => {
-                    checkItem(setItems, id, setSnackbar, 'Note');
-                    handleClosePopover();
-                  }}>
-                  <CheckCircleIcon
-                    fontSize='small'
-                    sx={{ color: theme.palette.primary.contrastText }}
-                  />
-                </IconButton>
+                <Tooltip arrow placement='right' title='Check note'>
+                  <IconButton
+                    sx={buttonStyle}
+                    onClick={() => {
+                      checkItem(setItems, id, setSnackbar, 'Note');
+                      handleClosePopover();
+                    }}>
+                    <CheckCircleIcon
+                      fontSize='small'
+                      sx={{ color: theme.palette.primary.contrastText }}
+                    />
+                  </IconButton>
+                </Tooltip>
                 <IconButton
                   sx={buttonStyle}
                   onClick={() => {
@@ -322,22 +375,17 @@ const NoteCard = ({
           {isEditing && editingId === id ? (
             <>
               <TextField
-                size='small'
-                onChange={(e) => setEditedContent(e.target.value)}
-                defaultValue={item.content}
                 fullWidth
                 multiline
+                defaultValue={item.content}
                 rows={4}
+                size='small'
                 sx={textFieldStyles}
+                onChange={(e) => setEditedContent(e.target.value)}
               />
               <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                 <TextField
-                  size='small'
                   id='startDate'
-                  label='Start Date'
-                  type='date'
-                  value={item.startDate || ''}
-                  onChange={handleStartDateChange}
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
@@ -347,6 +395,8 @@ const NoteCard = ({
                       />
                     ),
                   }}
+                  label='Start Date'
+                  size='small'
                   sx={{
                     flex: 1,
                     '& .MuiOutlinedInput-root': {
@@ -361,14 +411,12 @@ const NoteCard = ({
                       },
                     },
                   }}
+                  type='date'
+                  value={item.startDate || ''}
+                  onChange={handleStartDateChange}
                 />
                 <TextField
-                  size='small'
                   id='dueDate'
-                  label='Due Date'
-                  type='date'
-                  value={item.dueDate || ''}
-                  onChange={handleDueDateChange}
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
@@ -378,6 +426,8 @@ const NoteCard = ({
                       />
                     ),
                   }}
+                  label='Due Date'
+                  size='small'
                   sx={{
                     flex: 1,
                     '& .MuiOutlinedInput-root': {
@@ -392,6 +442,9 @@ const NoteCard = ({
                       },
                     },
                   }}
+                  type='date'
+                  value={item.dueDate || ''}
+                  onChange={handleDueDateChange}
                 />
               </Box>
               <IconButton
@@ -440,7 +493,7 @@ const NoteCard = ({
                 )}
                 {daysRemaining !== null && (
                   <Chip
-                    size='small'
+                    color={getDueDateChipColor()}
                     icon={
                       <AccessTimeIcon
                         sx={{
@@ -448,15 +501,15 @@ const NoteCard = ({
                             daysRemaining < 0
                               ? theme.palette.error.main
                               : daysRemaining <= 2
-                              ? theme.palette.warning.main
-                              : theme.palette.success.main,
+                                ? theme.palette.warning.main
+                                : theme.palette.success.main,
                         }}
                       />
                     }
                     label={`${daysRemaining} days ${
                       daysRemaining < 0 ? 'overdue' : 'remaining'
                     }`}
-                    color={getDueDateChipColor()}
+                    size='small'
                     sx={{
                       ml: 1,
                       fontWeight: 500,
@@ -465,8 +518,8 @@ const NoteCard = ({
                         daysRemaining < 0
                           ? theme.palette.error.main
                           : daysRemaining <= 2
-                          ? theme.palette.warning.main
-                          : theme.palette.success.main,
+                            ? theme.palette.warning.main
+                            : theme.palette.success.main,
                     }}
                   />
                 )}
@@ -477,6 +530,31 @@ const NoteCard = ({
       </CardContent>
     </Card>
   );
+};
+
+NoteCard.propTypes = {
+  item: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  editingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  editedTitle: PropTypes.string,
+  setEditedTitle: PropTypes.func,
+  editedContent: PropTypes.string,
+  setEditedContent: PropTypes.func,
+  handleEdit: PropTypes.func,
+  handleSave: PropTypes.func,
+  handleClickPopover: PropTypes.func,
+  handleClosePopover: PropTypes.func,
+  anchorEl: PropTypes.any,
+  // setAnchorEl: PropTypes.func,
+  handleDragStart: PropTypes.func,
+  handleDrop: PropTypes.func,
+  handleDragOver: PropTypes.func,
+  setItems: PropTypes.func,
+  setSnackbar: PropTypes.func,
+  items: PropTypes.array,
+  isCompact: PropTypes.bool,
 };
 
 export default NoteCard;
