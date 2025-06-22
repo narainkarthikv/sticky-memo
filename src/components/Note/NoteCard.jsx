@@ -35,6 +35,7 @@ import {
   dateContainerStyles,
   dateFieldStyles,
   dateValueStyles,
+  popoverButtonStyle,
 } from './styles';
 import { holdItem, checkItem, deleteItem } from '../../utils/helper';
 
@@ -319,62 +320,55 @@ const NoteCard = ({
               open={open}
               onClose={handleClosePopover}>
               <Typography sx={popoverStyles}>
-                <Tooltip arrow placement='right' title='Edit note'>
-                  <IconButton
-                    sx={buttonStyle}
-                    onClick={() => {
-                      handleEdit();
-                      handleClosePopover();
-                    }}>
-                    <EditIcon
-                      fontSize='small'
-                      sx={{ color: theme.palette.primary.contrastText }}
-                    />
-                  </IconButton>
-                </Tooltip>
                 <Tooltip
                   arrow
-                  placement='right'
-                  title={item.checked ? 'Uncheck note' : 'Check note'}>
+                  placement='top'
+                  title={isEditing ? 'Save note' : 'Edit note'}>
                   <IconButton
-                    sx={buttonStyle}
+                    variant='contained'
+                    sx={popoverButtonStyle}
                     onClick={() => {
-                      checkItem(setItems, id, setSnackbar, 'Note');
-                      handleClosePopover();
+                      if (isEditing) {
+                        handleSave(item, editingId, editedTitle, editedContent);
+                      } else {
+                        handleEdit();
+                      }
                     }}>
-                    <CheckCircleIcon
-                      fontSize='small'
-                      sx={{ color: theme.palette.primary.contrastText }}
-                    />
+                    {isEditing ? (
+                      <SaveIcon fontSize='medium' />
+                    ) : (
+                      <EditIcon fontSize='medium' />
+                    )}
                   </IconButton>
                 </Tooltip>
-                <Tooltip
-                  arrow
-                  placement='right'
-                  title={item.held ? 'Unhold note' : 'Hold note'}>
+                <Tooltip arrow placement='top' title='Hold note'>
                   <IconButton
-                    sx={buttonStyle}
+                    variant='contained'
+                    sx={popoverButtonStyle}
                     onClick={() => {
-                      holdItem(setItems, id, setSnackbar, 'Note');
-                      handleClosePopover();
+                      holdItem(setItems, editingId, setSnackbar, 'Note');
                     }}>
-                    <BackHandIcon
-                      fontSize='small'
-                      sx={{ color: theme.palette.primary.contrastText }}
-                    />
+                    <BackHandIcon fontSize='medium' />
                   </IconButton>
                 </Tooltip>
-                <Tooltip arrow placement='right' title='Delete note'>
+                <Tooltip arrow placement='top' title='Check note'>
                   <IconButton
-                    sx={buttonStyle}
-                    onClick={() => {
-                      deleteItem(setItems, id, setSnackbar, 'Note');
-                      handleClosePopover();
-                    }}>
-                    <DeleteIcon
-                      fontSize='small'
-                      sx={{ color: theme.palette.primary.contrastText }}
-                    />
+                    variant='contained'
+                    sx={popoverButtonStyle}
+                    onClick={() =>
+                      checkItem(setItems, editingId, setSnackbar, 'Note')
+                    }>
+                    <CheckCircleIcon fontSize='medium' />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip arrow placement='top' title='Delete note'>
+                  <IconButton
+                    variant='contained'
+                    sx={popoverButtonStyle}
+                    onClick={() =>
+                      deleteItem(setItems, editingId, setSnackbar, 'Note')
+                    }>
+                    <DeleteIcon fontSize='medium' />
                   </IconButton>
                 </Tooltip>
               </Typography>

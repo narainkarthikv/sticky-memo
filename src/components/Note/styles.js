@@ -1,5 +1,12 @@
 import theme from '../../theme';
 
+/**
+ * Returns the card styles for a note.
+ * @param {{checked?: boolean, held?: boolean}} item - The note item object.
+ * @param {boolean} [isCompact=false] - Whether to use compact styling.
+ * @returns {object} The style object for the note card.
+ */
+
 export const cardStyles = (item, isCompact = false) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -91,11 +98,13 @@ export const typographyStyles = {
 
 export const popoverStyles = {
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row', // horizontal layout
+  justifyContent: 'center',
+  alignItems: 'center',
   padding: theme.spacing(1),
   backgroundColor: theme.palette.primary.main,
   borderRadius: theme.spacing(1),
-  gap: theme.spacing(0.5),
+  gap: theme.spacing(1),
   minWidth: { xs: 200, sm: 240 },
 };
 
@@ -155,4 +164,22 @@ export const dateValueStyles = {
   fontSize: '0.875rem',
   color: theme.palette.text.primary,
   fontWeight: 500,
+};
+
+export const popoverButtonStyle = {
+  color: theme.palette.primary.contrastText,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.secondary.main,
+  width: 48,
+  height: 48,
+  margin: '8px auto',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+  transition: 'background-color 0.2s, transform 0.2s',
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.dark,
+    transform: 'scale(1.08)',
+  },
 };
