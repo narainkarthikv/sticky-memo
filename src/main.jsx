@@ -9,7 +9,7 @@ import LoadingSpinner from './components/Loading';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { themeModeState, themeState } from './utils/state';
-import { themes } from './themes';
+import { themes } from './themes/themes';
 import { CssBaseline } from '@mui/material';
 
 const AppWrapper = () => {

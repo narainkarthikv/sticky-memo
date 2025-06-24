@@ -51,7 +51,7 @@ const theme = createTheme({
     buttonHover: '0 4px 12px rgba(0, 0, 0, 0.2)',
   },
   typography: {
-    fontFamily: "'Outfit','Poppins', sans-serif",
+    fontFamily: "'Poppins', sans-serif",
     h1: {
       fontSize: '2.5rem',
       fontWeight: 600,
