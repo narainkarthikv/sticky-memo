@@ -231,6 +231,14 @@ const TableList = (props) => {
     setIsCompact((prev) => !prev);
   };
 
+  // Pin toggle handler (robust, by id)
+  const handlePinToggle = useCallback((id) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, pinned: !item.pinned } : item
+    );
+    setItems(updatedItems);
+  }, [items, setItems]);
+
   return (
     <Box sx={boxStyles}>
       <CommonSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
@@ -310,6 +318,7 @@ const TableList = (props) => {
                   setItems={setItems}
                   setSnackbar={setSnackbar}
                   items={items}
+                  handlePinToggle={handlePinToggle} // Pass pin handler
                 />
               ))}
               <TableRow>

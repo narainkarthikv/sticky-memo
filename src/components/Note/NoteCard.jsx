@@ -89,7 +89,7 @@ function ActionIcons({ item, theme, handlePinToggle, handleColorChange, handleCl
             borderRadius: 1.5,
             p: 0.5,
           }}
-          onClick={handlePinToggle}
+          onClick={() => handlePinToggle(id)}
         >
           {item.pinned ? <PushPin fontSize='small' /> : <PushPinOutlined fontSize='small' />}
         </IconButton>

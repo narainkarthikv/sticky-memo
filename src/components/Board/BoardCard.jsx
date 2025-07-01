@@ -1,4 +1,3 @@
-
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -8,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SaveIcon from '@mui/icons-material/Save';
+import PushPin from '@mui/icons-material/PushPin';
+import PushPinOutlined from '@mui/icons-material/PushPinOutlined';
 import {
   Card,
   CardContent,
@@ -85,6 +86,7 @@ const BoardCard = ({
   setSnackbar,
   items,
   isCompact = false,
+  handlePinToggle, // New prop for pin toggle
 }) => {
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
@@ -246,6 +248,25 @@ const BoardCard = ({
                       deleteItem(setItems, editingId, setSnackbar, 'Board')
                     }>
                     <DeleteIcon fontSize='small' sx={buttonStyle} />
+                  </IconButton>
+                </Tooltip>
+                {/* Pin/Unpin action */}
+                <Tooltip arrow title={item.pinned ? 'Unpin board' : 'Pin board'}>
+                  <IconButton
+                    size='small'
+                    sx={{
+                      color: item.pinned ? 'warning.main' : 'action.active',
+                      backgroundColor: item.pinned ? 'warning.light' : 'transparent',
+                      '&:hover': { backgroundColor: 'action.hover' },
+                      borderRadius: 1.5,
+                      p: 0.5,
+                    }}
+                    onClick={() => handlePinToggle(id)}>
+                    {item.pinned ? (
+                      <PushPin fontSize='small' />
+                    ) : (
+                      <PushPinOutlined fontSize='small' />
+                    )}
                   </IconButton>
                 </Tooltip>
               </Typography>
@@ -452,6 +473,7 @@ BoardCard.propTypes = {
   setSnackbar: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(PropTypes.object).isRequired, // Assuming an array of objects
   isCompact: PropTypes.bool,
+  handlePinToggle: PropTypes.func.isRequired, // New prop type for pin toggle
 };
 
 export default BoardCard;

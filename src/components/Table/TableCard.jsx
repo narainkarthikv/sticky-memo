@@ -1,4 +1,3 @@
-
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -8,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SaveIcon from '@mui/icons-material/Save';
+import PushPin from '@mui/icons-material/PushPin';
+import PushPinOutlined from '@mui/icons-material/PushPinOutlined';
 import {
   TableRow,
   TableCell,
@@ -56,6 +57,7 @@ import { holdItem, checkItem, deleteItem } from '../../utils/helper';
  * @param {function} props.setItems - Function to update the main items array state.
  * @param {function} props.setSnackbar - Function to show snackbar notifications.
  * @param {Array<object>} props.items - The full array of all items in the board.
+ * @param {function} props.handlePinToggle - Callback to toggle the pinned state of a row.
  * @returns {JSX.Element} A React component representing a table row for a note.
  */
 const TableCard = ({
@@ -79,6 +81,7 @@ const TableCard = ({
   setItems,
   setSnackbar,
   items,
+  handlePinToggle,
 }) => {
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
@@ -262,6 +265,21 @@ const TableCard = ({
                       <DeleteIcon fontSize='small' sx={buttonStyle} />
                     </IconButton>
                   </Tooltip>
+                  <Tooltip arrow title={item.pinned ? 'Unpin row' : 'Pin row'}>
+                    <IconButton
+                      size='small'
+                      sx={{
+                        color: item.pinned ? 'warning.main' : 'action.active',
+                        backgroundColor: item.pinned ? 'warning.light' : 'transparent',
+                        '&:hover': { backgroundColor: 'action.hover' },
+                        borderRadius: 1.5,
+                        p: 0.5,
+                      }}
+                      onClick={() => handlePinToggle(id)}
+                    >
+                      {item.pinned ? <PushPin fontSize='small' /> : <PushPinOutlined fontSize='small' />}
+                    </IconButton>
+                  </Tooltip>
                 </Typography>
               </Popover>
             </Box>
@@ -429,6 +447,7 @@ TableCard.propTypes = {
   setItems: PropTypes.func.isRequired,
   setSnackbar: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(PropTypes.object).isRequired, // Assuming an array of objects
+  handlePinToggle: PropTypes.func.isRequired,
 };
 
 export default TableCard;

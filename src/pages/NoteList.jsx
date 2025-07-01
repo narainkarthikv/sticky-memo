@@ -216,16 +216,16 @@ const NoteList = (props) => {
     }
   }, [isCompact]);
 
-  // Apply filtering and sorting with pinned notes separation
+  // Apply filtering and sorting with pinned notes at the top (no separate row)
   const processedItems = React.useMemo(() => {
     let result = filterItems(items, searchValue || filter);
     result = multiCriteriaSort(result, checkedSort, heldSort, titleSort);
-
-    // Separate pinned and unpinned notes
-    const pinnedNotes = result.filter((item) => item.pinned);
-    const unpinnedNotes = result.filter((item) => !item.pinned);
-
-    return { pinnedNotes, unpinnedNotes };
+    // Sort pinned notes to the top, but do not split into separate arrays/sections
+    result = result.slice().sort((a, b) => {
+      if (a.pinned === b.pinned) return 0;
+      return a.pinned ? -1 : 1;
+    });
+    return result;
   }, [items, filter, searchValue, checkedSort, heldSort, titleSort]);
 
   // Sorting handlers
@@ -248,6 +248,14 @@ const NoteList = (props) => {
   const handleSearchClear = () => {
     setSearchValue('');
   };
+
+  // Pin toggle handler (robust, by id)
+  const handlePinToggle = useCallback((id) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, pinned: !item.pinned } : item
+    );
+    setItems(updatedItems);
+  }, [items, setItems]);
 
   return (
     <>
@@ -433,71 +441,8 @@ const NoteList = (props) => {
           />
         </Box>
 
-        {/* Pinned Notes Section */}
-        {processedItems.pinnedNotes.length > 0 && (
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              variant='h6'
-              sx={{
-                mb: 2,
-                color: theme.palette.text.secondary,
-                fontWeight: 500,
-              }}>
-              📌 Pinned
-            </Typography>
-            <Grid
-              container
-              spacing={{
-                xs: isCompact ? 1 : 1.5,
-                sm: isCompact ? 1.5 : 2,
-                md: isCompact ? 2 : 3,
-              }}>
-              {processedItems.pinnedNotes.map((item, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} xl={2.4} key={item.id}>
-                  <NoteCard
-                    item={item}
-                    index={index}
-                    id={item.id}
-                    isEditing={isEditing}
-                    editingId={editingId}
-                    editedTitle={editedTitle}
-                    setEditedTitle={setEditedTitle}
-                    editedContent={editedContent}
-                    setEditedContent={setEditedContent}
-                    handleEdit={handleEdit}
-                    handleSave={handleSave}
-                    handleClickPopover={handleClickPopover}
-                    handleClosePopover={handleClosePopover}
-                    anchorEl={anchorEl}
-                    setAnchorEl={setAnchorEl}
-                    handleDragStart={handleDragStart}
-                    handleDrop={handleDrop}
-                    handleDragOver={handleDragOver}
-                    setItems={setItems}
-                    setSnackbar={setSnackbar}
-                    items={items}
-                    isCompact={isCompact}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Divider sx={{ mt: 3, mb: 2 }} />
-          </Box>
-        )}
-
         {/* All Notes Section */}
         <Box>
-          {processedItems.pinnedNotes.length > 0 && (
-            <Typography
-              variant='h6'
-              sx={{
-                mb: 2,
-                color: theme.palette.text.secondary,
-                fontWeight: 500,
-              }}>
-              📝 Others
-            </Typography>
-          )}
           <Grid
             container
             spacing={{
@@ -505,7 +450,7 @@ const NoteList = (props) => {
               sm: isCompact ? 1.5 : 2,
               md: isCompact ? 2 : 3,
             }}>
-            {processedItems.unpinnedNotes.map((item, index) => (
+            {processedItems.map((item, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} xl={2.4} key={item.id}>
                 <NoteCard
                   item={item}
@@ -530,6 +475,7 @@ const NoteList = (props) => {
                   setSnackbar={setSnackbar}
                   items={items}
                   isCompact={isCompact}
+                  handlePinToggle={handlePinToggle} // Pass pin handler
                 />
               </Grid>
             ))}

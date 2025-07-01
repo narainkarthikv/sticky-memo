@@ -1,4 +1,4 @@
-import React, { useState, useTransition, useEffect } from 'react';
+import React, { useState, useTransition, useEffect, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 import { itemsState, snackbarState } from '../utils/state';
 import BoardCard from '../components/Board/BoardCard';
@@ -149,6 +149,17 @@ const BoardList = (props) => {
     startTransition(() => setItems(updatedItems));
   };
 
+  // Pin toggle handler (robust, by id)
+  const handlePinToggle = useCallback(
+    (id) => {
+      const updatedItems = items.map((item) =>
+        item.id === id ? { ...item, pinned: !item.pinned } : item
+      );
+      setItems(updatedItems);
+    },
+    [items, setItems]
+  );
+
   // Apply filtering and sorting
   const processedItems = React.useMemo(() => {
     let result = filterItems(items, filter);
@@ -248,6 +259,7 @@ const BoardList = (props) => {
                 setSnackbar={setSnackbar}
                 items={items}
                 isCompact={isCompact}
+                handlePinToggle={handlePinToggle} // Pass pin handler
               />
             </Grid>
           ))}
