@@ -9,18 +9,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SaveIcon from '@mui/icons-material/Save';
 import PushPin from '@mui/icons-material/PushPin';
 import PushPinOutlined from '@mui/icons-material/PushPinOutlined';
-import {
-  Card,
-  CardContent,
-  IconButton,
-  Popover,
-  TextField,
-  Typography,
-  Box,
-  Tooltip,
-  Fade,
-  Chip,
-} from '@mui/material';
+import { useTheme, Box, IconButton, Tooltip, Paper } from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Popover from '@mui/material/Popover';
+import Fade from '@mui/material/Fade';
+import Chip from '@mui/material/Chip';
 import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 import { useState } from 'react';
 
@@ -88,6 +82,8 @@ const BoardCard = ({
   isCompact = false,
   handlePinToggle, // New prop for pin toggle
 }) => {
+  const theme = useTheme();
+
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
   const [dateHover, setDateHover] = useState(null);
@@ -154,14 +150,42 @@ const BoardCard = ({
     setItems(updatedItems);
   };
 
+  // Card highlight style for pinned
+  const cardStyle = {
+    backgroundColor: item.pinned ? theme.palette.warning.light : theme.palette.background.paper,
+    border: item.pinned ? `2px solid ${theme.palette.warning.main}` : `1px solid ${theme.palette.divider}`,
+    boxShadow: item.pinned ? theme.shadows.cardHover : theme.shadows.card,
+    transition: 'background 0.2s, border 0.2s, box-shadow 0.2s',
+    borderRadius: 2,
+    mb: 2,
+    p: 2,
+    position: 'relative',
+  };
+
   return (
-    <Card
-      draggable
-      sx={cardStyles(item, isCompact)}
-      variant='outlined'
-      onDragOver={(e) => handleDragOver(e)}
-      onDragStart={() => handleDragStart(index)}
-      onDrop={(e) => handleDrop(index, e)}>
+    <Paper elevation={0} sx={cardStyle}>
+      {/* Pin icon top right */}
+      <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <Tooltip arrow title={item.pinned ? 'Unpin board' : 'Pin board'}>
+          <IconButton
+            size='small'
+            sx={{
+              color: item.pinned ? theme.palette.warning.main : theme.palette.action.active,
+              backgroundColor: item.pinned ? theme.palette.warning.light : 'transparent',
+              '&:hover': { backgroundColor: theme.palette.action.hover },
+              borderRadius: 1.5,
+              p: 0.5,
+            }}
+            onClick={() => handlePinToggle(item.id)}>
+            {item.pinned ? (
+              <PushPin fontSize='small' />
+            ) : (
+              <PushPinOutlined fontSize='small' />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Box>
+
       <CardContent
         sx={{
           padding: 0,
@@ -353,8 +377,8 @@ const BoardCard = ({
             onMouseLeave={() => setDateHover(null)}>
             <Tooltip arrow title='Due Date'>
               <EventIcon
-                color='error'
-                fontSize='small'
+                color="error"
+                fontSize="small"
                 sx={{
                   transition: 'transform 0.2s ease',
                   transform: dateHover === 'due' ? 'scale(1.2)' : 'scale(1)',
@@ -436,7 +460,7 @@ const BoardCard = ({
           </Box>
         </Box>
       </CardContent>
-    </Card>
+    </Paper>
   );
 };
 
@@ -448,6 +472,7 @@ BoardCard.propTypes = {
     content: PropTypes.string,
     startDate: PropTypes.string, // Assuming date strings like 'YYYY-MM-DD'
     dueDate: PropTypes.string, // Assuming date strings like 'YYYY-MM-DD'
+    pinned: PropTypes.bool, // Ensure pinned is included
     // Add other properties of 'item' if they exist and are used
   }).isRequired,
   index: PropTypes.number.isRequired,

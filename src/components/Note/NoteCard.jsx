@@ -37,6 +37,7 @@ import {
   popoverButtonStyle,
 } from './styles';
 import { holdItem, checkItem, deleteItem } from '../../utils/helper';
+import { useSpring, animated } from '@react-spring/web';
 
 const NOTE_COLORS = [
   { name: 'Default', value: 'default', color: 'transparent' },
@@ -75,126 +76,6 @@ function getBackgroundColor(item) {
   return colorData ? colorData.color : 'transparent';
 }
 
-// Helper: Render action icons
-function ActionIcons({ item, theme, handlePinToggle, handleColorChange, handleClickPopover, ariaDescribedById, id }) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 1 }}>
-      <Tooltip arrow title={item.pinned ? 'Unpin note' : 'Pin note'}>
-        <IconButton
-          size='small'
-          sx={{
-            color: item.pinned ? theme.palette.warning.main : theme.palette.action.active,
-            backgroundColor: item.pinned ? theme.palette.warning.light : 'transparent',
-            '&:hover': { backgroundColor: theme.palette.action.hover },
-            borderRadius: 1.5,
-            p: 0.5,
-          }}
-          onClick={() => handlePinToggle(id)}
-        >
-          {item.pinned ? <PushPin fontSize='small' /> : <PushPinOutlined fontSize='small' />}
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow title='Change color'>
-        <IconButton
-          size='small'
-          sx={{
-            backgroundColor: getBackgroundColor(item),
-            border: (item.color || 'default') === 'default' ? `1px solid ${theme.palette.divider}` : 'none',
-            '&:hover': { opacity: 0.8 },
-            borderRadius: 1.5,
-            p: 0.5,
-          }}
-          onClick={handleColorChange}
-        >
-          <Palette fontSize='small' />
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow placement='right' title='More actions'>
-        <IconButton
-          aria-describedby={ariaDescribedById}
-          sx={{ ...buttonStyle, borderRadius: 1.5, p: 0.5 }}
-          size='small'
-          onClick={handleClickPopover}
-        >
-          <MoreVertIcon fontSize='small' />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  );
-}
-
-ActionIcons.propTypes = {
-  item: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  handlePinToggle: PropTypes.func.isRequired,
-  handleColorChange: PropTypes.func.isRequired,
-  handleClickPopover: PropTypes.func.isRequired,
-  ariaDescribedById: PropTypes.string,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
-// Helper: Render popover actions
-function PopoverActions({ isEditing, handleSave, handleEdit, item, editingId, editedTitle, editedContent, setItems, setSnackbar }) {
-  return (
-    <Typography sx={popoverStyles}>
-      <Tooltip arrow placement='top' title={isEditing ? 'Save note' : 'Edit note'}>
-        <IconButton
-          variant='contained'
-          sx={popoverButtonStyle}
-          onClick={() => {
-            if (isEditing) {
-              handleSave(item, editingId, editedTitle, editedContent);
-            } else {
-              handleEdit();
-            }
-          }}
-        >
-          {isEditing ? <SaveIcon fontSize='medium' /> : <EditIcon fontSize='medium' />}
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow placement='top' title='Hold note'>
-        <IconButton
-          variant='contained'
-          sx={popoverButtonStyle}
-          onClick={() => holdItem(setItems, editingId, setSnackbar, 'Note')}
-        >
-          <BackHandIcon fontSize='medium' />
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow placement='top' title='Check note'>
-        <IconButton
-          variant='contained'
-          sx={popoverButtonStyle}
-          onClick={() => checkItem(setItems, editingId, setSnackbar, 'Note')}
-        >
-          <CheckCircleIcon fontSize='medium' />
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow placement='top' title='Delete note'>
-        <IconButton
-          variant='contained'
-          sx={popoverButtonStyle}
-          onClick={() => deleteItem(setItems, editingId, setSnackbar, 'Note')}
-        >
-          <DeleteIcon fontSize='medium' />
-        </IconButton>
-      </Tooltip>
-    </Typography>
-  );
-}
-
-PopoverActions.propTypes = {
-  isEditing: PropTypes.bool.isRequired,
-  handleSave: PropTypes.func.isRequired,
-  handleEdit: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
-  editingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  editedTitle: PropTypes.string,
-  editedContent: PropTypes.string,
-  setItems: PropTypes.func.isRequired,
-  setSnackbar: PropTypes.func.isRequired,
-};
-
 const NoteCard = ({
   item,
   index,
@@ -217,11 +98,30 @@ const NoteCard = ({
   setSnackbar,
   items,
   isCompact = false,
+  handlePinToggle,
 }) => {
   const theme = useTheme();
   const open = Boolean(anchorEl);
   const ariaDescribedById = open ? 'simple-popover' : undefined;
   const daysRemaining = calculateDaysRemaining(item.dueDate);
+
+  // Animation for pin icon
+  const pinSpring = useSpring({
+    transform: item.pinned ? 'rotate(-30deg) scale(1.2)' : 'rotate(0deg) scale(1)',
+    config: { tension: 300, friction: 15 },
+  });
+
+  // Animation for card drag
+  const [isDragging, setIsDragging] = React.useState(false);
+
+  const handleDragStartCard = (idx) => {
+    setIsDragging(true);
+    handleDragStart(idx);
+  };
+  const handleDropCard = (idx, e) => {
+    setIsDragging(false);
+    handleDrop(idx, e);
+  };
 
   // Handlers
   const handleStartDateChange = (e) => {
@@ -256,44 +156,86 @@ const NoteCard = ({
     setItems(updatedItems);
   };
 
-  const handlePinToggle = () => {
-    const updatedItems = [...items];
-    updatedItems[index] = {
-      ...updatedItems[index],
-      pinned: !updatedItems[index].pinned,
-    };
-    setItems(updatedItems);
-  };
-
   return (
     <Card
       draggable
+      tabIndex={0}
       sx={{
         ...cardStyles(item, isCompact),
-        backgroundColor: getBackgroundColor(item),
+        backgroundColor: item.pinned
+          ? theme.palette.warning.light
+          : getBackgroundColor(item),
         border: item.pinned
-          ? `2px solid ${theme.palette.warning.light}`
+          ? `2px solid ${theme.palette.warning.main}`
           : `1px solid ${theme.palette.divider}`,
-        boxShadow: isCompact
-          ? '0 1px 4px rgba(0,0,0,0.08)'
-          : '0 2px 8px rgba(0,0,0,0.10)',
+        boxShadow: isDragging
+          ? '0 8px 24px rgba(0,0,0,0.18)'
+          : item.pinned
+            ? '0 4px 16px rgba(255,193,7,0.18)'
+            : isCompact
+              ? '0 1px 4px rgba(0,0,0,0.08)'
+              : '0 2px 8px rgba(0,0,0,0.10)',
         borderRadius: theme.spacing(2),
         transition: 'all 0.2s cubic-bezier(.4,0,.2,1)',
         '&:hover': {
           boxShadow: isCompact
-            ? '0 2px 8px rgba(0,0,0,0.12)' : '0 4px 16px rgba(0,0,0,0.13)',
+            ? '0 2px 8px rgba(0,0,0,0.12)'
+            : '0 4px 16px rgba(0,0,0,0.13)',
           transform: 'translateY(-2px) scale(1.01)',
         },
         minHeight: 210,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        position: 'relative',
+        outline: isDragging ? `2px solid ${theme.palette.primary.main}` : undefined,
       }}
       variant='outlined'
       onDragOver={handleDragOver}
-      onDragStart={() => handleDragStart(index)}
-      onDrop={(e) => handleDrop(index, e)}
+      onDragStart={() => handleDragStartCard(index)}
+      onDrop={(e) => handleDropCard(index, e)}
+      onDragEnd={() => setIsDragging(false)}
     >
+      {/* Pin icon top right, always visible, animated */}
+      <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <Tooltip arrow title={item.pinned ? 'Unpin note' : 'Pin note'}>
+          <animated.span style={pinSpring}>
+            <IconButton
+              size='small'
+              sx={{
+                color: item.pinned ? theme.palette.warning.main : theme.palette.action.active,
+                backgroundColor: item.pinned ? theme.palette.warning.light : 'transparent',
+                '&:hover': { backgroundColor: theme.palette.action.hover },
+                borderRadius: 1.5,
+                p: 0.5,
+              }}
+              onClick={() => handlePinToggle(id)}
+              aria-label={item.pinned ? 'Unpin note' : 'Pin note'}
+            >
+              {item.pinned ? <PushPin fontSize='small' /> : <PushPinOutlined fontSize='small' />}
+            </IconButton>
+          </animated.span>
+        </Tooltip>
+      </Box>
+      {/* Color palette icon always visible */}
+      <Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
+        <Tooltip arrow title='Change note color'>
+          <IconButton
+            size='small'
+            sx={{
+              color: theme.palette.secondary.main,
+              backgroundColor: 'rgba(0,0,0,0.04)',
+              '&:hover': { backgroundColor: theme.palette.secondary.light },
+              borderRadius: 1.5,
+              p: 0.5,
+            }}
+            onClick={handleColorChange}
+            aria-label='Change note color'
+          >
+            <Palette fontSize='small' />
+          </IconButton>
+        </Tooltip>
+      </Box>
       <CardContent
         sx={{
           padding: 2,
@@ -325,15 +267,17 @@ const NoteCard = ({
               </Typography>
             )}
           </Box>
-          <ActionIcons
-            item={item}
-            theme={theme}
-            handlePinToggle={handlePinToggle}
-            handleColorChange={handleColorChange}
-            handleClickPopover={(e) => handleClickPopover(e, id)}
-            ariaDescribedById={ariaDescribedById}
-            id={id}
-          />
+          {/* More actions popover icon */}
+          <Tooltip arrow placement='right' title='More actions'>
+            <IconButton
+              aria-describedby={ariaDescribedById}
+              sx={{ ...buttonStyle, borderRadius: 1.5, p: 0.5 }}
+              size='small'
+              onClick={(e) => handleClickPopover(e, id)}
+            >
+              <MoreVertIcon fontSize='small' />
+            </IconButton>
+          </Tooltip>
           <Popover
             anchorEl={anchorEl}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -341,23 +285,76 @@ const NoteCard = ({
             open={open}
             onClose={handleClosePopover}
           >
-            <PopoverActions
-              isEditing={isEditing}
-              handleSave={handleSave}
-              handleEdit={handleEdit}
-              item={item}
-              editingId={editingId}
-              editedTitle={editedTitle}
-              editedContent={editedContent}
-              setItems={setItems}
-              setSnackbar={setSnackbar}
-            />
+            <Typography sx={popoverStyles}>
+              {/* Edit/Save */}
+              <Tooltip arrow placement='top' title={isEditing ? 'Save note' : 'Edit note'}>
+                <IconButton
+                  variant='contained'
+                  sx={popoverButtonStyle}
+                  onClick={() => {
+                    if (isEditing) {
+                      handleSave(item, id, editedTitle, editedContent);
+                    } else {
+                      handleEdit();
+                    }
+                  }}
+                >
+                  {isEditing ? <SaveIcon fontSize='medium' /> : <EditIcon fontSize='medium' />}
+                </IconButton>
+              </Tooltip>
+              {/* Hold */}
+              <Tooltip arrow placement='top' title='Hold note'>
+                <IconButton
+                  variant='contained'
+                  sx={popoverButtonStyle}
+                  onClick={() => holdItem(setItems, id, setSnackbar, 'Note')}
+                >
+                  <BackHandIcon fontSize='medium' />
+                </IconButton>
+              </Tooltip>
+              {/* Check */}
+              <Tooltip arrow placement='top' title='Check note'>
+                <IconButton
+                  variant='contained'
+                  sx={popoverButtonStyle}
+                  onClick={() => checkItem(setItems, id, setSnackbar, 'Note')}
+                >
+                  <CheckCircleIcon fontSize='medium' />
+                </IconButton>
+              </Tooltip>
+              {/* Delete */}
+              <Tooltip arrow placement='top' title='Delete note'>
+                <IconButton
+                  variant='contained'
+                  sx={popoverButtonStyle}
+                  onClick={() => deleteItem(setItems, id, setSnackbar, 'Note')}
+                >
+                  <DeleteIcon fontSize='medium' />
+                </IconButton>
+              </Tooltip>
+              {/* Pin/Unpin */}
+              <Tooltip arrow title={item.pinned ? 'Unpin note' : 'Pin note'}>
+                <IconButton
+                  size='small'
+                  sx={{
+                    color: item.pinned ? theme.palette.warning.main : theme.palette.action.active,
+                    backgroundColor: item.pinned ? theme.palette.warning.light : 'transparent',
+                    '&:hover': { backgroundColor: theme.palette.action.hover },
+                    borderRadius: 1.5,
+                    p: 0.5,
+                  }}
+                  onClick={() => handlePinToggle(id)}
+                >
+                  {item.pinned ? <PushPin fontSize='small' /> : <PushPinOutlined fontSize='small' />}
+                </IconButton>
+              </Tooltip>
+            </Typography>
           </Popover>
         </Box>
         {/* Content Row */}
         <Box sx={{ flex: 1, p: 0, mt: 0.5 }}>
           {isEditing && editingId === id ? (
-            <>
+            <React.Fragment>
               <TextField
                 fullWidth
                 multiline
@@ -410,9 +407,9 @@ const NoteCard = ({
                   <SaveIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
-            </>
+            </React.Fragment>
           ) : (
-            <>
+            <React.Fragment>
               <Typography sx={{ mb: 1.5, color: theme.palette.text.secondary, fontSize: 15, lineHeight: 1.5, minHeight: 48 }}>
                 {item.content}
               </Typography>
@@ -469,7 +466,7 @@ const NoteCard = ({
                   />
                 )}
               </Box>
-            </>
+            </React.Fragment>
           )}
         </Box>
       </CardContent>
@@ -478,7 +475,15 @@ const NoteCard = ({
 };
 
 NoteCard.propTypes = {
-  item: PropTypes.object.isRequired,
+  item: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
+    content: PropTypes.string,
+    startDate: PropTypes.string,
+    dueDate: PropTypes.string,
+    pinned: PropTypes.bool,
+    color: PropTypes.string,
+  }).isRequired,
   index: PropTypes.number.isRequired,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   isEditing: PropTypes.bool.isRequired,
@@ -499,6 +504,7 @@ NoteCard.propTypes = {
   setSnackbar: PropTypes.func,
   items: PropTypes.array,
   isCompact: PropTypes.bool,
+  handlePinToggle: PropTypes.func.isRequired,
 };
 
 export default NoteCard;

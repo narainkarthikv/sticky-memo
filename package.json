@@ -22,6 +22,7 @@
   "dependencies": {
     "@mui/icons-material": "^6.1.4",
     "@mui/material": "^6.1.5",
+    "@react-spring/web": "^10.0.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.18.1",
     "prop-types": "^15.8.1",
@@ -51,4 +52,3 @@
     "vite": "^5.4.8"
   }
 }
-

@@ -160,10 +160,15 @@ const BoardList = (props) => {
     [items, setItems]
   );
 
-  // Apply filtering and sorting
+  // Apply filtering and sorting with pinned boards at the top
   const processedItems = React.useMemo(() => {
     let result = filterItems(items, filter);
     result = multiCriteriaSort(result, checkedSort, heldSort, titleSort);
+    // Sort pinned boards to the top
+    result = result.slice().sort((a, b) => {
+      if (a.pinned === b.pinned) return 0;
+      return a.pinned ? -1 : 1;
+    });
     return result;
   }, [items, filter, checkedSort, heldSort, titleSort]);
 
