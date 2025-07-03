@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,17 +28,7 @@ import {
   boxStyles,
   popoverTypographyStyles,
 } from './styles';
-import { holdItem, checkItem, deleteItem } from '../../utils/helper';
-
-// Helper: Calculate days remaining until due date
-function calculateDaysRemaining(dueDate) {
-  if (!dueDate) return null;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  due.setHours(0, 0, 0, 0);
-  return Math.ceil((due.getTime() - today.getTime()) / (1000 * 3600 * 24));
-}
+import { getCardStateStyles, calculateDaysRemaining, getDueDateChipColor, getPinIconProps } from '../../utils/cardHelpers';
 
 // Helper: Get chip color for due date
 function getDueDateColor(daysRemaining, theme) {
@@ -77,21 +67,41 @@ const TableCard = ({
   const daysRemaining = calculateDaysRemaining(item.dueDate);
   const isRowEditing = isEditing && editingId === id;
 
+  // Local state for editable dates
+  const [editedStartDate, setEditedStartDate] = useState(item.startDate || '');
+  const [editedDueDate, setEditedDueDate] = useState(item.dueDate || '');
+
+  useEffect(() => {
+    if (isRowEditing) {
+      setEditedStartDate(item.startDate || '');
+      setEditedDueDate(item.dueDate || '');
+    }
+  }, [isRowEditing, item.startDate, item.dueDate]);
+
   // Handlers for editing
   const onTitleChange = (e) => setEditedTitle(e.target.value);
   const onContentChange = (e) => setEditedContent(e.target.value);
+  const onStartDateChange = (e) => setEditedStartDate(e.target.value);
+  const onDueDateChange = (e) => setEditedDueDate(e.target.value);
 
-  // Accessibility: highlight pinned row
-  const rowHighlight = item.pinned
-    ? {
-        boxShadow: `0 0 0 2px ${theme.palette.warning.main}`,
-        backgroundColor: theme.palette.warning.light,
-      }
-    : {};
+  // Save handler with date fields
+  const onSave = () => {
+    handleSave(
+      item,
+      id,
+      editedTitle,
+      editedContent,
+      editedStartDate,
+      editedDueDate
+    );
+  };
+
+  // Pin icon props
+  const pinProps = getPinIconProps(item.pinned, theme);
 
   return (
     <TableRow
-      sx={{ ...tableRowStyles(item), ...rowHighlight }}
+      sx={{ ...getCardStateStyles(item, theme) }}
       draggable
       onDragStart={() => handleDragStart(index)}
       onDrop={(e) => handleDrop(index, e)}
@@ -106,8 +116,8 @@ const TableCard = ({
             aria-label={item.pinned ? 'Unpin row' : 'Pin row'}
             onClick={() => handlePinToggle(id)}
             sx={{
-              color: item.pinned ? theme.palette.warning.main : theme.palette.action.active,
-              backgroundColor: item.pinned ? theme.palette.warning.light : 'transparent',
+              color: pinProps.color,
+              backgroundColor: pinProps.backgroundColor,
               borderRadius: 1.5,
               p: 0.5,
               '&:hover': { backgroundColor: theme.palette.action.hover },
@@ -156,87 +166,63 @@ const TableCard = ({
       <TableCell align="center">
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
           <EventIcon fontSize="small" color="action" />
-          <Typography variant="caption">
-            {item.startDate ? item.startDate : '--'}
-          </Typography>
+          {isRowEditing ? (
+            <TextField
+              type="date"
+              value={editedStartDate}
+              onChange={onStartDateChange}
+              size="small"
+              variant="standard"
+              inputProps={{ 'aria-label': 'Edit start date' }}
+              sx={{ minWidth: 110 }}
+            />
+          ) : (
+            <Typography variant="caption">
+              {item.startDate ? item.startDate : '--'}
+            </Typography>
+          )}
         </Box>
       </TableCell>
       {/* Due Date */}
       <TableCell align="center">
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
           <CalendarTodayIcon fontSize="small" color="action" />
-          <Typography
-            variant="caption"
-            sx={{
-              backgroundColor: getDueDateColor(daysRemaining, theme),
-              borderRadius: 1,
-              px: 1,
-              py: 0.5,
-              fontWeight: 500,
-              color: daysRemaining < 0 ? theme.palette.error.dark : theme.palette.text.primary,
-            }}
-          >
-            {item.dueDate ? item.dueDate : '--'}
-            {item.dueDate && (
-              <span style={{ marginLeft: 6, fontWeight: 400 }}>
-                ({daysRemaining < 0 ? `${Math.abs(daysRemaining)}d overdue` : `${daysRemaining}d left`})
-              </span>
-            )}
-          </Typography>
+          {isRowEditing ? (
+            <TextField
+              type="date"
+              value={editedDueDate}
+              onChange={onDueDateChange}
+              size="small"
+              variant="standard"
+              inputProps={{ 'aria-label': 'Edit due date' }}
+              sx={{ minWidth: 110 }}
+            />
+          ) : (
+            <Typography
+              variant="caption"
+              sx={{
+                backgroundColor: getDueDateChipColor(daysRemaining, theme),
+                borderRadius: 1,
+                px: 1,
+                py: 0.5,
+                fontWeight: 500,
+                color: daysRemaining < 0 ? theme.palette.error.dark : theme.palette.text.primary,
+              }}
+            >
+              {item.dueDate ? item.dueDate : '--'}
+              {item.dueDate && (
+                <span style={{ marginLeft: 6, fontWeight: 400 }}>
+                  ({daysRemaining < 0 ? `${Math.abs(daysRemaining)}d overdue` : `${daysRemaining}d left`})
+                </span>
+              )}
+            </Typography>
+          )}
         </Box>
       </TableCell>
       {/* Actions */}
-      <TableCell align="center" sx={{ width: 120, p: 0 }}>
+      <TableCell align="center" sx={{ width: 64, p: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'center' }}>
-          {/* Edit/Save */}
-          <Tooltip title={isRowEditing ? 'Save' : 'Edit'} arrow>
-            <IconButton
-              aria-label={isRowEditing ? 'Save' : 'Edit'}
-              onClick={() =>
-                isRowEditing
-                  ? handleSave(item, id, editedTitle, editedContent)
-                  : handleEdit(id, item.title, item.content)
-              }
-              sx={buttonStyle}
-              size="small"
-            >
-              {isRowEditing ? <SaveIcon fontSize="small" /> : <EditIcon fontSize="small" />}
-            </IconButton>
-          </Tooltip>
-          {/* Hold */}
-          <Tooltip title="Hold" arrow>
-            <IconButton
-              aria-label="Hold"
-              onClick={() => holdItem(setItems, id, setSnackbar, 'Row')}
-              sx={buttonStyle}
-              size="small"
-            >
-              <BackHandIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          {/* Check */}
-          <Tooltip title="Check" arrow>
-            <IconButton
-              aria-label="Check"
-              onClick={() => checkItem(setItems, id, setSnackbar, 'Row')}
-              sx={buttonStyle}
-              size="small"
-            >
-              <CheckCircleIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          {/* Delete */}
-          <Tooltip title="Delete" arrow>
-            <IconButton
-              aria-label="Delete"
-              onClick={() => deleteItem(setItems, id, setSnackbar, 'Row')}
-              sx={buttonStyle}
-              size="small"
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          {/* More actions popover */}
+          {/* Only show the More actions button */}
           <Tooltip title="More actions" arrow>
             <IconButton
               aria-describedby={ariaDescribedById}
@@ -256,14 +242,10 @@ const TableCard = ({
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             disableRestoreFocus
           >
-            <Typography sx={popoverTypographyStyles}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', p: 1, gap: 1 }}>
               <Tooltip title={isRowEditing ? 'Save' : 'Edit'} arrow>
                 <IconButton
-                  onClick={() =>
-                    isRowEditing
-                      ? handleSave(item, id, editedTitle, editedContent)
-                      : handleEdit(id, item.title, item.content)
-                  }
+                  onClick={isRowEditing ? onSave : () => handleEdit(id, item.title, item.content)}
                   sx={buttonStyle}
                   size="small"
                 >
@@ -297,7 +279,23 @@ const TableCard = ({
                   <DeleteIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-            </Typography>
+              <Tooltip title={item.pinned ? 'Unpin row' : 'Pin row'} arrow>
+                <IconButton
+                  aria-label={item.pinned ? 'Unpin row' : 'Pin row'}
+                  onClick={() => handlePinToggle(id)}
+                  sx={{
+                    color: pinProps.color,
+                    backgroundColor: pinProps.backgroundColor,
+                    borderRadius: 1.5,
+                    p: 0.5,
+                    '&:hover': { backgroundColor: theme.palette.action.hover },
+                  }}
+                  size="small"
+                >
+                  {item.pinned ? <PushPin fontSize="small" /> : <PushPinOutlined fontSize="small" />}
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Popover>
         </Box>
       </TableCell>

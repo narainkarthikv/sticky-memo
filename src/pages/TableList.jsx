@@ -280,6 +280,10 @@ const TableList = (props) => {
           <Table sx={tableStyles} size={isCompact ? 'small' : 'medium'}>
             <TableHead sx={tableHeadStyles}>
               <TableRow>
+                <TableCell align='center' sx={{ ...tableCellStyles, width: 48 }}>
+                  {/* Pin icon header */}
+                  <span role="img" aria-label="Pin">📌</span>
+                </TableCell>
                 <TableCell align='center' sx={tableCellStyles}>
                   Title
                 </TableCell>
@@ -295,6 +299,10 @@ const TableList = (props) => {
                   align='center'
                   sx={{ ...tableCellStyles, minWidth: '250px' }}>
                   Due Date
+                </TableCell>
+                <TableCell align='center' sx={{ ...tableCellStyles, width: 64 }}>
+                  {/* Actions header */}
+                  <span role="img" aria-label="Actions">⋮</span>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -323,11 +331,11 @@ const TableList = (props) => {
                   setItems={setItems}
                   setSnackbar={setSnackbar}
                   items={items}
-                  handlePinToggle={handlePinToggle} // Pass pin handler
+                  handlePinToggle={handlePinToggle}
                 />
               ))}
               <TableRow>
-                <TableCell colSpan={4} align='center'>
+                <TableCell colSpan={6} align='center'>
                   <AddButton onClick={addRow} />
                 </TableCell>
               </TableRow>

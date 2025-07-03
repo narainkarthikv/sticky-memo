@@ -164,7 +164,7 @@ const BoardCard = ({
 
   return (
     <Paper elevation={0} sx={cardStyle}>
-      {/* Pin icon top right */}
+      {/* Pin icon top right, always visible */}
       <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
         <Tooltip arrow title={item.pinned ? 'Unpin board' : 'Pin board'}>
           <IconButton
@@ -208,6 +208,7 @@ const BoardCard = ({
             )}
           </>
           <Box sx={{ marginLeft: 'auto' }}>
+            {/* Only show the More actions button */}
             <Tooltip arrow placement='top' title='More actions'>
               <IconButton
                 aria-describedby={ariaDescribedById}
@@ -216,7 +217,6 @@ const BoardCard = ({
                 <MoreVertIcon fontSize='small' />
               </IconButton>
             </Tooltip>
-
             <Popover
               anchorEl={anchorEl}
               anchorOrigin={{
@@ -226,7 +226,7 @@ const BoardCard = ({
               id={ariaDescribedById}
               open={open}
               onClose={handleClosePopover}>
-              <Typography sx={popoverStyles}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', p: 1, gap: 1 }}>
                 <Tooltip
                   arrow
                   placement='top'
@@ -274,7 +274,6 @@ const BoardCard = ({
                     <DeleteIcon fontSize='small' sx={buttonStyle} />
                   </IconButton>
                 </Tooltip>
-                {/* Pin/Unpin action */}
                 <Tooltip arrow title={item.pinned ? 'Unpin board' : 'Pin board'}>
                   <IconButton
                     size='small'
@@ -293,7 +292,7 @@ const BoardCard = ({
                     )}
                   </IconButton>
                 </Tooltip>
-              </Typography>
+              </Box>
             </Popover>
           </Box>
         </Typography>

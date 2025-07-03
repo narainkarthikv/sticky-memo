@@ -267,7 +267,7 @@ const NoteCard = ({
               </Typography>
             )}
           </Box>
-          {/* More actions popover icon */}
+          {/* More actions popover icon (only visible action button) */}
           <Tooltip arrow placement='right' title='More actions'>
             <IconButton
               aria-describedby={ariaDescribedById}
@@ -285,8 +285,7 @@ const NoteCard = ({
             open={open}
             onClose={handleClosePopover}
           >
-            <Typography sx={popoverStyles}>
-              {/* Edit/Save */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', p: 1, gap: 1 }}>
               <Tooltip arrow placement='top' title={isEditing ? 'Save note' : 'Edit note'}>
                 <IconButton
                   variant='contained'
@@ -299,40 +298,36 @@ const NoteCard = ({
                     }
                   }}
                 >
-                  {isEditing ? <SaveIcon fontSize='medium' /> : <EditIcon fontSize='medium' />}
+                  {isEditing ? <SaveIcon fontSize='small' /> : <EditIcon fontSize='small' />}
                 </IconButton>
               </Tooltip>
-              {/* Hold */}
               <Tooltip arrow placement='top' title='Hold note'>
                 <IconButton
                   variant='contained'
                   sx={popoverButtonStyle}
                   onClick={() => holdItem(setItems, id, setSnackbar, 'Note')}
                 >
-                  <BackHandIcon fontSize='medium' />
+                  <BackHandIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
-              {/* Check */}
               <Tooltip arrow placement='top' title='Check note'>
                 <IconButton
                   variant='contained'
                   sx={popoverButtonStyle}
                   onClick={() => checkItem(setItems, id, setSnackbar, 'Note')}
                 >
-                  <CheckCircleIcon fontSize='medium' />
+                  <CheckCircleIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
-              {/* Delete */}
               <Tooltip arrow placement='top' title='Delete note'>
                 <IconButton
                   variant='contained'
                   sx={popoverButtonStyle}
                   onClick={() => deleteItem(setItems, id, setSnackbar, 'Note')}
                 >
-                  <DeleteIcon fontSize='medium' />
+                  <DeleteIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
-              {/* Pin/Unpin */}
               <Tooltip arrow title={item.pinned ? 'Unpin note' : 'Pin note'}>
                 <IconButton
                   size='small'
@@ -344,11 +339,12 @@ const NoteCard = ({
                     p: 0.5,
                   }}
                   onClick={() => handlePinToggle(id)}
+                  aria-label={item.pinned ? 'Unpin note' : 'Pin note'}
                 >
                   {item.pinned ? <PushPin fontSize='small' /> : <PushPinOutlined fontSize='small' />}
                 </IconButton>
               </Tooltip>
-            </Typography>
+            </Box>
           </Popover>
         </Box>
         {/* Content Row */}
